@@ -34,6 +34,10 @@ class TruckFileReader:
             current_line += 1
             line = l.strip()
 
+            #skip blank lines
+            if not line:
+                continue
+
             next_line = False
             for section in self.sections:
                 if line == section:
@@ -134,6 +138,8 @@ class TruckFileReader:
                 self.external_camera['type'] = args.pop(0)
                 if self.external_camera['type'] == "node":
                     self.external_camera['node'] = args.pop(0)
+                else:
+                    self.external_camera['node'] = -1
                 continue
 
             if line.startswith("submesh_groundmodel"):
@@ -223,31 +229,36 @@ class TruckFileReader:
             #flexbody_camera_mode
 
             if line.startswith("add_animation"):
+                if not hasattr(self, "animation"):
+                    self.animation = []
+                anim = {}
+                self.animation.append(anim)
+
                 args = filter(len, re.split(r',',line))
                 args.pop(0)
-                self.animation = {}
-                self.animation['ratio']    = args.pop(0)
-                self.animation['option_1'] = args.pop(0)
-                self.animation['option_2'] = args.pop(0)
-                self.animation['source']   = args.pop(0)
-                self.animation['mode']     = args.pop(0)
+                anim['ratio']    = args.pop(0)
+                anim['option_1'] = args.pop(0)
+                anim['option_2'] = args.pop(0)
+                anim['source']   = args.pop(0)
+                anim['mode']     = args.pop(0)
                 if args:
-                    self.add_animation['event'] = args.pop(0)
+                    anim['event'] = args.pop(0)
+                else:
+                    anim['event'] = ""
                 continue
 
             if line.startswith("set_managedmaterials_options"):
                 self.managed_materials_options = self._parse_args(line).pop(0)
                 continue
 
-            #broken. Positional
             if line.startswith("set_beam_defaults_scale"):
-                args = self._parse_args(line)
-                args.pop(0)
-
                 if not hasattr(self, "beam_defaults_scale"):
                     self.beam_defaults_scale = []
                 scale = {}
-                self.beam_defaults_scale.insert(0, scale)
+                self.beam_defaults_scale.append(scale)
+
+                args = self._parse_args(line)
+                args.pop(0)
 
                 scale['line']   = current_line
                 scale['spring'] = args.pop(0)
@@ -261,18 +272,126 @@ class TruckFileReader:
                 continue
 
             if line.startswith("set_beam_defaults"):
+                if not hasattr(self, "beam_defaults"):
+                    self.beam_defaults = []
+                defaults = {}
+                self.beam_defaults.append(defaults)
+
                 args = self._parse_args(line)
                 args.pop(0)
-                self.beam_defaults = {}
+                defaults['line']   = current_line
+                defaults['spring'] = args.pop(0)
+                defaults['damp']   = args.pop(0)
+                defaults['deform'] = args.pop(0)
+                defaults['break']  = args.pop(0)
+                if args:
+                    defaults['diameter'] = args.pop(0)
+                else:
+                    defaults['diamater'] = -1
 
+                if args:
+                    defaults['material'] = args.pop(0)
+                else:
+                    defaults['material'] = -1
 
-            print line
+                if args:
+                    defaults['deform_plastic'] = args.pop(0)
+                else:
+                    defaults['deform_plastic'] = -1
+                continue
+
+            if line.startswith("set_inertia_defaults"):
+                if not hasattr(self, 'inertia_defaults'):
+                    self.inertia_defaults = []
+                defaults = {}
+                self.inertia_defaults.append(defaults)
+
+                args = self._parse_args(line)
+                args.pop(0)
+
+                defaults['line'] = current_line
+
+                if len(args) == 1:
+                    defaults['default'] = True
+                    continue
+
+                defaults['start_delay']    = args.pop(0)
+                defaults['stop_delay']     = args.pop(0)
+                defaults['start_function'] = args.pop(0)
+                defaults['stop_function']  = args.pop(0)
+                continue
+
+            if line.startswith("set_node_defaults"):
+                if not hasattr(self, 'node_defaults'):
+                    self.node_defaults = []
+                defaults = {}
+                self.node_defaults.append(defaults)
+
+                args = self._parse_args(line)
+                args.pop(0)
+                defaults['line']        = current_line
+                defaults['load_weight'] = args.pop(0)
+                defaults['friction']    = args.pop(0)
+                defaults['volume']      = args.pop(0)
+                defaults['surface']     = args.pop(0)
+                defaults['options']     = args.pop(0)
+                continue
+
+            if line.startswith("set_skeleton_settings"):
+                args = self._parse_args(line)
+                args.pop(0)
+                self.skeleton_settings = {}
+                self.skeleton_settings['sight_range'] = args.pop(0)
+                self.skeleton_settings['beam_diameter'] = args.pop(0)
+                continue
+
+            if line.startswith("backmesh"):
+                if not hasattr(self, 'backmeshes'):
+                    self.backmeshes = []
+                self.backmeshes.append(current_line)
+                continue
+
+            if line.startswith("submesh"):
+                if hasattr(self, 'submeshes'):
+                    self.submeshes = []
+                self.submeshes.append(current_line)
+                continue
+
+            if line.startswith("set_collision_range"):
+                self.collision_range = self._parse_args(line)[1]
+                continue
+
+            if self.mode == "nodes" or self.mode == "nodes2":
+                if self.comment(line):
+                    continue
+
+                print line
+                if not hasattr(self, "nodes"):
+                    self.nodes = []
+                node = {}
+                self.nodes.append(node)
+
+                args = self._parse_args(line)
+                node['id'] = args.pop(0)
+                node['x'] = args.pop(0)
+                node['y'] = args.pop(0)
+                node['z'] = args.pop(0)
+                if args:
+                    node['options'] = args.pop(0)
+                else:
+                    node['options'] = ""
+                continue
+
+            #print line
 
     def _parse_args(self, data):
         unfiltered_args = re.split(r":|\||,| |\t", data)
         return filter(len, unfiltered_args)
+
+    def comment(self, line):
+        return line[0] == ";"
         
 #Importer()
 x = TruckFileReader()
 x.load_truck(mxs.getopenfilename())
-print x.beam_defaults_scale
+#print x.nodes
