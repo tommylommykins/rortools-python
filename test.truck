@@ -26,6 +26,11 @@ is
     my description :D
 end_description
 
+set_beam_defaults_scale 0, 1, 2, 3
+set_beam_defaults_scale a, b, c, d
+set_beam_defaults_scale one, two, three, four
+
+
 nodes
 ;spring_adjuster_support002_Invisible
 0, -2.75,0.734775,-0.135527
@@ -569,3 +574,4 @@ wheels
 
 
 end
+

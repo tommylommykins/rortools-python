@@ -29,7 +29,9 @@ class TruckFileReader:
         truck_file_contents = open(truck_file).read()
 
         self.mode = "NONE"
+        current_line = -1
         for l in truck_file_contents.splitlines():
+            current_line += 1
             line = l.strip()
 
             next_line = False
@@ -128,28 +130,140 @@ class TruckFileReader:
             if line.startswith("extcamera"):
                 args = self._parse_args(line)
                 args.pop(0)
-                self.external_camera = args.pop(0)
-                if self.external_camera == "node":
-                    self.external_camera_node = args.pop(0)
+                self.external_camera = {}
+                self.external_camera['type'] = args.pop(0)
+                if self.external_camera['type'] == "node":
+                    self.external_camera['node'] = args.pop(0)
+                continue
 
             if line.startswith("submesh_groundmodel"):
                 args = self._parse_args(line)
                 args.pop(0)
                 self.submesh_ground_model = args.pop(0)
+                continue
 
             if line.startswith("SlopeBrake"):
                 args = self._parse_args(line)
                 args.pop(0)
-                self.slope_regulating_force = args.pop(0)
-                self.slope_attack_angle = args.pop(0)
-                self.slope_release_angle = args.pop(0)
+                self.slope_brake = {}
+                self.slope_brake['regulating_force'] = args.pop(0)
+                self.slope_brake['attack_angle']     = args.pop(0)
+                self.slope_brake['release_angle']    = args.pop(0)
+                continue
 
             if line.startswith("AntiLockBrakes"):
+                args = filter(len, re.split(r',',line))
+                args.pop(0)
+                self.anti_lock = {}
+                self.anti_lock['regulating_force'] = args.pop(0)
+                self.anti_lock['min_speed']        = args.pop(0)
+                self.anti_lock['pulse_rate']       = args.pop(0)
+                self.anti_lock['mode']             = args.pop(0)
+                continue
+
+            if line.startswith("TractionControl"):
+                args = filter(len, re.split(r',',line))
+                args.pop(0)
+                self.traction_control = {}
+                self.traction_control['regulating_force'] = args.pop(0)
+                self.traction_control['wheelslip']        = args.pop(0)
+                self.traction_control['fadespeed']        = args.pop(0)
+                self.traction_control['pulse_rate']       = args.pop(0)
+                self.traction_control['mode']             = args.pop(0)
+                continue
+
+            if line.startswith("cruisecontrol"):
                 args = self._parse_args(line)
                 args.pop(0)
-                self.anti_lock_regulating_force = args.pop(0)
-                self.anti_lock_min_speed = args.pop(0)
-                self.anti_lock_pulse_rate = args.pop(0)
+                self.cruise_control = {}
+                self.cruise_control['low_limit'] = args.pop(0)
+                self.cruise_control['autobrake'] = args.pop(0)
+                continue
+
+            if line.startswith("speedlimiter"):
+                args = self._parse_args(line)
+                args.pop(0)
+                self.speed_limiter = args.pop(0)
+                continue
+
+            if line.startswith("fileformatversion"):
+                args = self._parse_args(line)
+                args.pop(0)
+                self.file_format_version = args.pop(0)
+                continue
+
+            if line.startswith("author"):
+                args = self._parse_args(line)
+                args.pop(0)
+                self.author = {}
+                self.author['type']  = args.pop(0)
+                self.author['id']    = args.pop(0)
+                self.author['name']  = args.pop(0)
+                self.author['email'] = args.pop(0)
+                continue
+
+            if line.startswith("slidenode_connect_instantly"):
+                self.slidenode_connect_instantly = true
+                continue
+
+            if line.startswith("enable_advanced_deformation"):
+                self.enable_advanced_deformation = true
+                continue
+
+            if line.startswith("lockgroup_default_nolock"):
+                self.lockgroup_default_nolock = true
+                continue
+
+            if line.startswith("set_shadows"):
+                self.shadow_mode = self._parse_args(line)[1]
+                continue
+
+            #broken -- needs to be parsed with props
+            #if line.startswith("prop_camera_mode")
+            #flexbody_camera_mode
+
+            if line.startswith("add_animation"):
+                args = filter(len, re.split(r',',line))
+                args.pop(0)
+                self.animation = {}
+                self.animation['ratio']    = args.pop(0)
+                self.animation['option_1'] = args.pop(0)
+                self.animation['option_2'] = args.pop(0)
+                self.animation['source']   = args.pop(0)
+                self.animation['mode']     = args.pop(0)
+                if args:
+                    self.add_animation['event'] = args.pop(0)
+                continue
+
+            if line.startswith("set_managedmaterials_options"):
+                self.managed_materials_options = self._parse_args(line).pop(0)
+                continue
+
+            #broken. Positional
+            if line.startswith("set_beam_defaults_scale"):
+                args = self._parse_args(line)
+                args.pop(0)
+
+                if not hasattr(self, "beam_defaults_scale"):
+                    self.beam_defaults_scale = []
+                scale = {}
+                self.beam_defaults_scale.insert(0, scale)
+
+                scale['line']   = current_line
+                scale['spring'] = args.pop(0)
+                scale['damp']   = args.pop(0)
+                scale['deform'] = args.pop(0)
+                scale['break']  = args.pop(0)
+                continue
+
+            if line.startswith("guid"):
+                self.guid = self._parse_args(line)[1]
+                continue
+
+            if line.startswith("set_beam_defaults"):
+                args = self._parse_args(line)
+                args.pop(0)
+                self.beam_defaults = {}
 
 
             print line
@@ -161,4 +275,4 @@ class TruckFileReader:
 #Importer()
 x = TruckFileReader()
 x.load_truck(mxs.getopenfilename())
-print x.file_info['file_version']
+print x.beam_defaults_scale
