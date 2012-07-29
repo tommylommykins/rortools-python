@@ -1,5 +1,3 @@
-import re
-
 class TruckFileReader:
     def __init__(self):
         self.define_sections()
@@ -17,7 +15,6 @@ class TruckFileReader:
     #Loads a file. Iterates through it and creates data structures which can later be queried.
     def load_truck(self, truck_file):
         self.parse_truck(truck_file)
-        self.resolve_node_ids()
 
     def parse_truck(self, truck_file):
         """Reads a truck file. Incomplete. Sections that are written do not yet correctly
@@ -38,7 +35,7 @@ class TruckFileReader:
             next_line = False
             for section in self.sections:
                 if line == section:
-                    print "MATCH"
+                    print "MODE" + self.mode
                     self.mode = section
                     #Note: In the sourcecode, the mode queue is currently never actually used for anything, so
                     #it is not implemented here
@@ -376,58 +373,94 @@ class TruckFileReader:
                 continue
 
             if self.mode == "nodes" or self.mode == "nodes2":
-                if self.comment(line):
-                    continue
-
-                print line
-                if not hasattr(self, "unresolved_nodes"):
-                    self.unresolved_nodes = []
-                node = {}
-                self.unresolved_nodes.append(node)
+                if self._comment(line): continue #Comments are not used for parsing nodes yet.
 
                 args = self._parse_args(line)
+                node = {}
                 node['id'] = args.pop(0)
                 node['x'] = float(args.pop(0))
                 node['y'] = float(args.pop(0))
                 node['z'] = float(args.pop(0))
-                if args:
-                    node['options'] = args.pop(0)
-                else:
-                    node['options'] = ""
 
-                if args:
-                    node['mass'] = float(args.pop(0))
-                else:
-                    node['mass'] = ""
+                if args:node['options'] = args.pop(0)
+                else: node['options'] = ""
+
+                if args: node['mass'] = float(args.pop(0))
+                else: node['mass'] = ""
+
+                self._add_node(node)
+                continue
+
+            if self.mode == "camerarail":
+                continue
+
+            if self.mode == "lockgroups":
+                continue
+
+            if self.mode == "hooks":
+                continue
+
+            if self.mode == "triggers":
+                continue
+
+            if self.mode == "beams":
+                if not hasattr(self, "beams"): self.beams = []
+                if self._comment(line): continue #Comments are not used for parsing beams yet
+
+                args = self._parse_args(line)
+
+                beam = {}
+                self.beams.append(beam)
+
+                beam['line']  = current_line
+                beam['node1'] = self._resolve_node(args.pop(0))
+                beam['node2'] = self._resolve_node(args.pop(0))
+
+                if args: beam['options'] = args.pop(0)
+                else: beam['options'] = ""
+
+                if args: beam['support_length'] = apgs.pop(0)
+                else:beam['support_length'] = ""
+
                 continue
 
             #print line
 
-    def resolve_node_ids(self):
-        """Creates a mapping between named nodes and their actual node IDs
+    def _add_node(self, node):
+        """Adds a node to the node list.
+        If the node is a named node, then adds an entry to the named node list too.
         """
-        self.nodes = []
-        self.named_nodes = {}
-        free_node = -1
-        for node in self.unresolved_nodes:
-            free_node += 1
+        if not hasattr(self, "nodes"): self.nodes = []
+        if not hasattr(self, "named_nodes"): self.named_nodes = {}
+        if not hasattr(self, "free_node"): self.free_node = -1
+        self.free_node += 1
 
-            try:
-                copy_node = dict(node)
-                copy_node['id'] = int(node['id'])
-                self.nodes.append(copy_node)
-            except:
-                #If the ID is not a number then it is a named node
-                node_name = node['id']
-                copy_node = dict(node)
-                copy_node['id'] = free_node
-                self.nodes.append(copy_node)
-                self.named_nodes[node_name] = free_node
+        copy_node = dict(node)
+
+        try: 
+            copy_node['id'] = int(node['id'])
+        except:
+            node_name = node['id']
+            if node_name not in self.named_nodes: self.named_nodes[node_name] = self.free_node
+            copy_node['id'] = self.named_nodes[node_name]
+
+        self.nodes.append(copy_node)
+
+    def _resolve_node(self, node_id):
+        """Get the node ID for a node. Translates named nodes into node IDs.
+        """
+        try:
+            return int(node_id)
+        except:
+            if node_id in self.named_nodes: 
+                return self.named_nodes[node_id]
+            print [node['id'] for node in self.nodes]
+            raise Exception("Undeclared node found: " + node_id)
 
     def _parse_args(self, data):
         unfiltered_args = re.split(r":|\||,| |\t", data)
         return filter(len, unfiltered_args)
 
-    def comment(self, line):
+    def _comment(self, line):
         return line[0] == ";"
     
