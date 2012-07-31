@@ -8,6 +8,9 @@ fileinfo 1, 2, 3
 globals
 11000.0, 1000.0, 95bbUID-tracks/agora
 
+comment
+yayayayay this is unparsed
+end_comment
 
 engine
 1000, 2500, 10000.0, 2.0, 6.0, 6.0, 8.0, 5.0, 3.0, 2.0, 1.55, 1.25, -1
@@ -16,6 +19,21 @@ engine
 engoption
 0.4, t
 
+forwardcommands
+importcommands
+rollon
+rescuer
+disabledefaultsounds
+
+submesh_groundmodel rock
+
+slidenode_connect_instantly
+
+enable_advanced_deformation
+
+lockgroup_default_nolock
+
+set_shadows
 
 brakes
 30000
@@ -30,6 +48,23 @@ set_beam_defaults_scale 0, 1, 2, 3
 set_beam_defaults_scale a, b, c, d
 set_beam_defaults_scale one, two, three, four
 
+set_node_defaults -1, -1, -1, -1
+
+SlopeBrake 10, 5, 12
+
+AntiLockBrakes 12, 15, 2000, mode: ON & NODASH
+
+TractionControl 6, 0.01, 100, 2000, mode: ON
+
+cruisecontrol        10      1
+
+set_skeleton_settings 150, 0.01
+
+prop_camera_mode -1
+
+flexbody_camera_mode -1
+
+set_inertia_defaults 0.7,0.5, smoothcrane revprogressiv
 
 nodes
 ;spring_adjuster_support002_Invisible
@@ -572,6 +607,26 @@ wheels
 0.45, 1, 12, 40, 29, 41, 1, 1, 14, 375.0, 4000000.0, 6000.0, tracks/wheelface tracks/wheelband1
 0.45, 1, 12, 27, 45, 44, 1, 1, 14, 375.0, 4000000.0, 6000.0, tracks/wheelface tracks/wheelband1
 
+submesh
+texcoords
+77, 0.291, 0.334
+78, 0.291, 0.665
+53, 0.422, 0.334
+54, 0.422, 0.665
+6, 0.422, 0.334
+8, 0.422, 0.665
+cab
+77,78,54
+77,54,53
+53,54,8,c
+53,8,6,c
+backmesh
+
+extcamera classic
+extcamera node FOU
+extcamera node 34
+
+add_animation 200, 0, 0, source: steeringwheel, mode: x-rotation
 
 end
 
