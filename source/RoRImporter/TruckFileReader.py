@@ -1,3 +1,4 @@
+import re
 class TruckFileReader:
     def __init__(self):
         self.define_sections()
@@ -203,15 +204,15 @@ class TruckFileReader:
                 continue
 
             if line.startswith("slidenode_connect_instantly"):
-                self.slidenode_connect_instantly = true
+                self.slidenode_connect_instantly = True
                 continue
 
             if line.startswith("enable_advanced_deformation"):
-                self.enable_advanced_deformation = true
+                self.enable_advanced_deformation = True
                 continue
 
             if line.startswith("lockgroup_default_nolock"):
-                self.lockgroup_default_nolock = true
+                self.lockgroup_default_nolock = True
                 continue
 
             if line.startswith("set_shadows"):
@@ -419,7 +420,7 @@ class TruckFileReader:
                 if args: beam['options'] = args.pop(0)
                 else: beam['options'] = ""
 
-                if args: beam['support_length'] = apgs.pop(0)
+                if args: beam['support_length'] = args.pop(0)
                 else:beam['support_length'] = ""
 
                 continue
