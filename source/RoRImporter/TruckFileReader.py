@@ -1,6 +1,7 @@
 import re
 class TruckFileReader:
     def __init__(self):
+        print "yayayayay"
         self.define_sections()
 
     def define_sections(self):
