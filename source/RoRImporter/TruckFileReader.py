@@ -126,6 +126,49 @@ class Beam(object):
         self.options = options
         self.support_length = support_length
         
+class Trigger(object):
+    def __init__(self, node1 = None, node2 = None, contraction_limit = None, extension_limit = None, shorten_key = None,
+                 lengthen_key = None, option = None, boundary_timer = None):
+        self.node1 = node1
+        self.node2 = node2
+        self.contraction_limit = contraction_limit
+        self.extension_limit = extension_limit
+        self.shorten_key = shorten_key
+        self.lengthen_key = lengthen_key
+        self.option = option
+        self.boundary_timer = boundary_timer
+        
+class Shock(object):
+    def __init__(self, 
+                 node1= None, 
+                 node2 = None, 
+                 spring_in = None, 
+                 damp_in = None,
+                 progressive_spring_in = None,
+                 progressive_damp_in = None,
+                 spring_out = None, 
+                 damp_out = None,
+                 progressive_spring_out = None,
+                 progressive_damp_out = None,                  
+                 shortest_length = None, 
+                 longest_length = None,
+                 precompression = None, 
+                 options = None):
+        self.node1 = node1
+        self.node2 = node2
+        self.spring_in = spring_in
+        self.damp_in = damp_in
+        self.progressive_spring_in = progressive_spring_in
+        self.progressive_damp_in = progressive_damp_in
+        self.spring_out = spring_out
+        self.damp_out = damp_out
+        self.progressive_spring_out = progressive_spring_out
+        self.progressive_damp_out = progressive_damp_out
+        self.shortest_length = shortest_length
+        self.longest_length = longest_length
+        self.precompression = precompression
+        self.options = options
+        
 class TruckFileReader(object):
     def __init__(self):
         self.define_sections()
@@ -259,7 +302,7 @@ class TruckFileReader(object):
                 self.external_camera = ExternalCamera()
                 self.external_camera.type = args.pop(0)
                 if self.external_camera.type == "node":
-                    self.external_camera.node = args.pop(0)
+                    self.external_camera.node = self._resolve_node(args.pop(0))
                 continue
 
             if line.startswith("submesh_groundmodel"):
@@ -278,8 +321,7 @@ class TruckFileReader(object):
                 continue
 
             if line.startswith("AntiLockBrakes"):
-                args = filter(len, re.split(r',',line))
-                args.pop(0)
+                args = filter(len, re.split(r',',line[14:-1]))
                 self.anti_lock = AntiLockBrakes()
                 self.anti_lock.regulating_force = args.pop(0)
                 self.anti_lock.min_speed        = args.pop(0)
@@ -288,8 +330,7 @@ class TruckFileReader(object):
                 continue
 
             if line.startswith("TractionControl"):
-                args = filter(len, re.split(r',',line))
-                args.pop(0)
+                args = filter(len, re.split(r',',line[15:-1]))
                 self.traction_control = TractionControl()
                 self.traction_control.regulating_force = args.pop(0)
                 self.traction_control.wheel_slip       = args.pop(0)
@@ -345,8 +386,7 @@ class TruckFileReader(object):
                 continue
 
             if line.startswith("prop_camera_mode"):
-                if not hasattr(self, "prop_camera_modes"):
-                    self.prop_camera_modes = []
+                if not hasattr(self, "prop_camera_modes"): self.prop_camera_modes = []
                 mode = PropCameraMode()
                 self.prop_camera_modes.append(mode)
 
@@ -355,8 +395,7 @@ class TruckFileReader(object):
                 continue
 
             if line.startswith("flexbody_camera_mode"):
-                if not hasattr(self, "flexbody_camera_modes"):
-                    self.flexbody_camera_modes = []
+                if not hasattr(self, "flexbody_camera_modes"): self.flexbody_camera_modes = []
                 mode = FlexbodyCameraMode()
                 self.flexbody_camera_modes.append(mode)
 
@@ -365,20 +404,17 @@ class TruckFileReader(object):
 
 
             if line.startswith("add_animation"):
-                if not hasattr(self, "animation"):
-                    self.animation = []
+                if not hasattr(self, "animation"): self.animation = []
                 anim = AddAnimation()
                 self.animation.append(anim)
 
-                args = filter(len, re.split(r',',line))
-                args.pop(0)
+                args = filter(len, re.split(r',',line[13:-1]))
                 anim.ratio    = args.pop(0)
                 anim.option_1 = args.pop(0)
                 anim.option_2 = args.pop(0)
                 anim.source   = args.pop(0)
                 anim.mode     = args.pop(0)
-                if args:
-                    anim.event = args.pop(0)
+                if args: anim.event = args.pop(0)
                 continue
 
             if line.startswith("set_managedmaterials_options"):
@@ -386,8 +422,7 @@ class TruckFileReader(object):
                 continue
 
             if line.startswith("set_beam_defaults_scale"):
-                if not hasattr(self, "beam_defaults_scale"):
-                    self.beam_defaults_scale = []
+                if not hasattr(self, "beam_defaults_scale"): self.beam_defaults_scale = []
                 scale = SetBeamDefaultsScale()
                 self.beam_defaults_scale.append(scale)
 
@@ -406,8 +441,7 @@ class TruckFileReader(object):
                 continue
 
             if line.startswith("set_beam_defaults"):
-                if not hasattr(self, "beam_defaults"):
-                    self.beam_defaults = []
+                if not hasattr(self, "beam_defaults"): self.beam_defaults = []
                 defaults = SetBeamDefaults()
                 self.beam_defaults.append(defaults)
 
@@ -424,8 +458,7 @@ class TruckFileReader(object):
                 continue
 
             if line.startswith("set_inertia_defaults"):
-                if not hasattr(self, 'inertia_defaults'):
-                    self.inertia_defaults = []
+                if not hasattr(self, 'inertia_defaults'): self.inertia_defaults = []
                 defaults = SetInertiaDefaults()
                 self.inertia_defaults.append(defaults)
 
@@ -445,8 +478,7 @@ class TruckFileReader(object):
                 continue
 
             if line.startswith("set_node_defaults"):
-                if not hasattr(self, 'node_defaults'):
-                    self.node_defaults = []
+                if not hasattr(self, 'node_defaults'): self.node_defaults = []
                 defaults = SetNodeDefaults()
                 self.node_defaults.append(defaults)
 
@@ -457,7 +489,7 @@ class TruckFileReader(object):
                 defaults.friction    = args.pop(0)
                 defaults.volume      = args.pop(0)
                 defaults.surface     = args.pop(0)
-                defaults.options     = args.pop(0)
+                if args: defaults.options     = args.pop(0)
                 continue
 
             if line.startswith("set_skeleton_settings"):
@@ -469,13 +501,12 @@ class TruckFileReader(object):
                 continue
 
             if line.startswith("backmesh"):
-                if not hasattr(self, 'backmeshes'):
-                    self.backmeshes = []
+                if not hasattr(self, 'backmeshes'): self.backmeshes = []
                 self.backmeshes.append(current_line)
                 continue
 
             if line.startswith("submesh"):
-                if hasattr(self, 'submeshes'):
+                if not hasattr(self, 'submeshes'):
                     self.submeshes = []
                 self.submeshes.append(current_line)
                 continue
@@ -514,7 +545,7 @@ class TruckFileReader(object):
                 continue
 
             if self.mode == "beams":
-                if not hasattr(self, "beams"): self.beams = []
+                self.beams = getattr(self, "beams", [])
                 if self._comment(line): continue #Comments are not used for parsing beams yet
 
                 args = self._parse_args(line)
@@ -528,7 +559,86 @@ class TruckFileReader(object):
                 if args: beam.options = args.pop(0)
                 if args: beam.support_length = args.pop(0)
                 continue
-
+            
+            if self.mode == "triggers":
+                if not hasattr(self, "triggers"): self.triggers = []
+                if self._comment(line): continue
+                
+                trigger = Trigger()
+                self.triggers.append(trigger)
+                
+                args = self._parse_args(line)
+                trigger.node1 = self._resolve_node(args.pop(0))
+                trigger.node2 = self._resolve_node(args.pop(0))
+                trigger.contraction_limit = args.pop(0)
+                trigger.extension_limit = args.pop(0)
+                trigger.shorten_key = args.pop(0)
+                trigger.lengthen_key = args.pop(0)
+                if args: trigger.option = args.pop(0)
+                if args: trigger.boundary_timer = args.pop(0)
+                continue
+                
+            if self.mode == "shocks":
+                self.shocks = getattr(self, "shocks", [])
+                if self._comment(line): continue
+                
+                shock = Shock()
+                self.shocks.append(shock)
+                args = self._parse_args(line)
+                shock.node1 = self._resolve_node(args.pop(0))
+                shock.node2 = self._resolve_node(args.pop(0))
+                shock.spring_in = args.pop(0)
+                shock.damp_in = args.pop(0)
+                shock.progressive_spring_in = 0
+                shock.progressive_damp_in = 0
+                shock.spring_out = shock.spring_in
+                shock.damp_out = shock.damp_in
+                shock.progressive_spring_out = 0
+                shock.progressive_damp_out = 0
+                shock.shortest_length = args.pop(0)
+                shock.longest_length = args.pop(0)
+                shock.precompression = args.pop(0)
+                if args: shock.options = args.pop(0)
+                continue
+            
+            if self.mode == "shocks2":
+                self.shocks = getattr(self, "shocks", [])
+                if self._comment(line): continue
+                
+                shock = Shock()
+                self.shocks.append(shock)
+                args = self._parse_args(line)
+                shock.node1 = self._resolve_node(args.pop(0))
+                shock.node2 = self._resolve_node(args.pop(0))
+                shock.spring_in = args.pop(0)
+                shock.damp_in = args.pop(0)
+                shock.progressive_spring_in = args.pop(0)
+                shock.progressive_damp_in = args.pop(0)
+                shock.spring_out = args.pop(0)
+                shock.damp_out = args.pop(0)
+                shock.progressive_spring_out = args.pop(0)
+                shock.progressive_damp_out = args.pop(0)
+                shock.shortest_length = args.pop(0)
+                shock.longest_length = args.pop(0)
+                shock.precompression = args.pop(0)
+                if args: shock.options = args.pop(0)
+                continue
+            
+            if self.mode == "fixes":
+                self.fixes = getattr(self, "fixes", [])
+                if self._comment(line): continue
+                self.fixes.append(self._resolve_node(line))
+                print self.fixes
+                continue
+            
+            if self.mode == "hydros":
+                self.hydros = getattr(self, "hydros", [])
+                if self._comment(line): continue
+                
+                hydro = Hydro()
+                
+                continue
+            
             #print line
 
     def _add_node(self, node):
@@ -559,7 +669,7 @@ class TruckFileReader(object):
         except:
             if node_id in self.named_nodes: 
                 return self.named_nodes[node_id]
-            print [node['id'] for node in self.nodes]
+            print [node.id for node in self.nodes]
             raise Exception("Undeclared node found: " + node_id)
 
     def _parse_args(self, data):

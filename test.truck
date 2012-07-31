@@ -15,7 +15,6 @@ end_comment
 engine
 1000, 2500, 10000.0, 2.0, 6.0, 6.0, 8.0, 5.0, 3.0, 2.0, 1.55, 1.25, -1
 
-
 engoption
 0.4, t
 
@@ -33,7 +32,7 @@ enable_advanced_deformation
 
 lockgroup_default_nolock
 
-set_shadows
+set_shadows -1
 
 brakes
 30000
@@ -627,6 +626,16 @@ extcamera node FOU
 extcamera node 34
 
 add_animation 200, 0, 0, source: steeringwheel, mode: x-rotation
+
+triggers
+11, 109,  0.100,  0.100, 13, 14
+11, 109,  0.900,  1.100, 1, 2, cs 3.0
+
+fixes
+3
+BAR
+4
+FOU
 
 end
 
