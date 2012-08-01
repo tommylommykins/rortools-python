@@ -599,6 +599,8 @@ hydros
 18, 77, 0.05, 
 19, 73, -0.05, 
 
+meshwheels2
+0.660,   0.315, 0.375,  12,  27,  26,  38, 4, 1,  22, 100.0, 150000.0, 1500.0, r, my-rim.mesh my-tire-material
 
 wheels
 0.45, 1, 12, 24, 37, 36, 1, 1, 14, 375.0, 4000000.0, 6000.0, tracks/wheelface tracks/wheelband1

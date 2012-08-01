@@ -169,6 +169,177 @@ class Shock(object):
         self.precompression = precompression
         self.options = options
         
+class Hydro(object):
+    def __init__(self, node1 = None, node2 = None, ratio = None, options = None, start_delay = None, stop_delay = None,
+                 start_function = None, stop_function = None):
+        self.node1 = node1
+        self.node2 = node2
+        self.ratio = ratio
+        self.options = options
+        self.start_delay = start_delay
+        self.stop_delay = stop_delay
+        self.start_function = start_function
+        self.stop_function = stop_function
+        
+class Animator(object):
+    def __init__(self, node1 = None, node2 = None, factor = None, option = None):
+        self.node1 = node1
+        self.node2 = node2
+        self.factor = factor
+        self.option = option
+        
+class Wheel(object):
+    def __init__(self, radius = None, numrays = None, node1 = None, node2 = None, rigidity_node = None, braked = None,
+                 driven = None, reference_node = None, mass = None, spring = None, damp = None, face_material = None,
+                 tread_material = None):
+        self.radius = radius
+        self.numrays = numrays
+        self.node1 = node1
+        self.node2 = node2
+        self.rigidity_node = rigidity_node
+        self.braked = braked
+        self.driven = driven
+        self.reference_node = reference_node
+        self.mass = mass
+        self.spring = spring
+        self.damp = damp
+        self.face_material = face_material
+        self.tread_material = tread_material
+        
+class Wheel2(object):
+    def __init__(self, 
+                 rim_radius = None,
+                 tyre_radius = None, 
+                 numrays = None, 
+                 node1 = None, 
+                 node2 = None, 
+                 rigidity_node = None, 
+                 braked = None,
+                 driven = None, 
+                 reference_node = None, 
+                 mass = None, 
+                 rim_spring = None, 
+                 rim_damp = None,
+                 tyre_spring = None, 
+                 tyre_damp = None, 
+                 face_material = None,
+                 tread_material = None):
+        self.rim_radius = rim_radius
+        self.tyre_radius = tyre_radius
+        self.numrays = numrays
+        self.node1 = node1
+        self.node2 = node2
+        self.rigidity_node = rigidity_node
+        self.braked = braked
+        self.driven = driven
+        self.reference_node = reference_node
+        self.mass = mass
+        self.rim_spring = rim_spring
+        self.rim_damp = rim_damp
+        self.tyre_spring = tyre_spring
+        self.tyre_damp = tyre_damp
+        self.face_material = face_material
+        self.tread_material = tread_material
+        
+class Meshwheel(object):
+    def __init__(self, 
+                 tyre_radius = None,
+                 rim_radius = None, 
+                 numrays = None, 
+                 node1 = None, 
+                 node2 = None, 
+                 rigidity_node = None, 
+                 braked = None,
+                 driven = None, 
+                 reference_node = None, 
+                 mass = None, 
+                 spring = None, 
+                 damp = None,
+                 side = None,
+                 face_material = None,
+                 tread_material = None):
+        self.tyre_radius = tyre_radius
+        self.rim_radius = rim_radius
+        self.numrays = numrays
+        self.node1 = node1
+        self.node2 = node2
+        self.rigidity_node = rigidity_node
+        self.braked = braked
+        self.driven = driven
+        self.reference_node = reference_node
+        self.mass = mass
+        self.spring = spring
+        self.damp = damp
+        self.side = side
+        self.face_material = face_material
+        self.tread_material = tread_material
+        
+class Flexbodywheel(object):
+    def __init__(self, 
+                 rim_radius = None,
+                 tyre_radius = None, 
+                 numrays = None, 
+                 node1 = None, 
+                 node2 = None, 
+                 rigidity_node = None, 
+                 braked = None,
+                 driven = None, 
+                 reference_node = None, 
+                 mass = None, 
+                 rim_spring = None, 
+                 rim_damp = None,
+                 tyre_spring = None, 
+                 tyre_damp = None, 
+                 direction = None,
+                 face_material = None,
+                 tread_material = None):
+        self.rim_radius = rim_radius
+        self.tyre_radius = tyre_radius
+        self.numrays = numrays
+        self.node1 = node1
+        self.node2 = node2
+        self.rigidity_node = rigidity_node
+        self.braked = braked
+        self.driven = driven
+        self.reference_node = reference_node
+        self.mass = mass
+        self.rim_spring = rim_spring
+        self.rim_damp = rim_damp
+        self.tyre_spring = tyre_spring
+        self.tyre_damp = tyre_damp
+        self.direction = direction
+        self.face_material = face_material
+        self.tread_material = tread_material
+        
+class Camera(object):
+    def __init__(self, center = None, back = None, left = None):
+        self.center = center
+        self.back = back
+        self.left = left
+        
+class Commands2(object):
+    def __init__(self,
+                 node1 = None,
+                 node2 = None,
+                 shorten_rate = None,
+                 lengthen_rate = None,
+                 shortest_length = None,
+                 longest_length = None,
+                 shorten_key = None,
+                 lengthen_key = None,
+                 option = None,
+                 description = None):
+        self.node1 = node1
+        self.node2 = node2
+        self.shorten_rate = shorten_rate
+        self.lengthen_rate = lengthen_rate
+        self.shortest_length = shortest_length
+        self.longest_length = longest_length
+        self.shorten_key = shorten_key
+        self.lengthen_key = lengthen_key
+        self.option = option
+        self.description = description
+        
 class TruckFileReader(object):
     def __init__(self):
         self.define_sections()
@@ -545,8 +716,8 @@ class TruckFileReader(object):
                 continue
 
             if self.mode == "beams":
-                self.beams = getattr(self, "beams", [])
                 if self._comment(line): continue #Comments are not used for parsing beams yet
+                self.beams = getattr(self, "beams", [])
 
                 args = self._parse_args(line)
 
@@ -561,8 +732,8 @@ class TruckFileReader(object):
                 continue
             
             if self.mode == "triggers":
-                if not hasattr(self, "triggers"): self.triggers = []
                 if self._comment(line): continue
+                if not hasattr(self, "triggers"): self.triggers = []
                 
                 trigger = Trigger()
                 self.triggers.append(trigger)
@@ -579,8 +750,8 @@ class TruckFileReader(object):
                 continue
                 
             if self.mode == "shocks":
-                self.shocks = getattr(self, "shocks", [])
                 if self._comment(line): continue
+                self.shocks = getattr(self, "shocks", [])
                 
                 shock = Shock()
                 self.shocks.append(shock)
@@ -602,11 +773,12 @@ class TruckFileReader(object):
                 continue
             
             if self.mode == "shocks2":
-                self.shocks = getattr(self, "shocks", [])
                 if self._comment(line): continue
+                self.shocks = getattr(self, "shocks", [])
                 
                 shock = Shock()
                 self.shocks.append(shock)
+                
                 args = self._parse_args(line)
                 shock.node1 = self._resolve_node(args.pop(0))
                 shock.node2 = self._resolve_node(args.pop(0))
@@ -628,18 +800,187 @@ class TruckFileReader(object):
                 self.fixes = getattr(self, "fixes", [])
                 if self._comment(line): continue
                 self.fixes.append(self._resolve_node(line))
-                print self.fixes
                 continue
             
             if self.mode == "hydros":
-                self.hydros = getattr(self, "hydros", [])
                 if self._comment(line): continue
+                self.hydros = getattr(self, "hydros", [])
                 
                 hydro = Hydro()
+                self.hydros.append(hydro)
+                
+                args = self._parse_args(line)
+                hydro.node1 = self._resolve_node(args.pop(0))
+                hydro.node2 = self._resolve_node(args.pop(0))
+                if args: hydro.ratio = args.pop(0)
+                if args: hydro.options = args.pop(0)
+                if args: hydro.start_delay = args.pop(0)
+                if args: hydro.stop_delay = args.pop(0)
+                if args: hydro.start_function = args.pop(0)
+                if args: hydro.stop_function = args.pop(0)
+                continue
+            
+            if self.mode == "animators":
+                if self._comment(line): continue
+                self.animators = getattr(self, "animators", [])
+                
+                animator = Animator()
+                self.animators.append(animator)
+
+                args = filter(len, re.split(r',',line[9:-1]))                
+                animator.node1 = self._resolve_node(args.pop(0))
+                animator.node2 = self._resolve_node(args.pop(0))
+                animator.factor = args.pop(0)
+                animator.option = args.pop(0)
+                continue
+                
+            if self.mode == "wheels":
+                if self._comment(line): continue
+                self.wheels = getattr(self, "wheels", [])
+                
+                wheel = Wheel()
+                self.wheels.append(wheel)
+                
+                args = self._parse_args(line)
+                wheel.radius = args.pop(0)
+                args.pop(0)
+                wheel.numrays = args.pop(0)
+                wheel.node1 = self._resolve_node(args.pop(0))
+                wheel.node2 = self._resolve_node(args.pop(0))
+                wheel.rigidity_node = self._resolve_node(args.pop(0))
+                wheel.braked = args.pop(0)
+                wheel.driven = args.pop(0)
+                wheel.reference_node = self._resolve_node(args.pop(0))
+                wheel.mass = args.pop(0)
+                wheel.spring = args.pop(0)
+                wheel.damp = args.pop(0)
+                wheel.face_material = args.pop(0)
+                wheel.tread_material = args.pop(0)
+                continue
+            
+            if self.mode == "wheels2":
+                if self._comment(line): continue
+                self.wheels2 = getattr(self, "wheels2", [])
+                
+                wheel2 = Wheel2()
+                self.wheels2.append(wheel2)
+                
+                args = self._parse_args(line)
+                wheel2.rim_radius = args.pop(0)
+                wheel2.tyre_radius = args.pop(0)
+                args.pop(0)
+                wheel2.numrays = args.pop(0)
+                wheel2.node1 = self._resolve_node(args.pop(0))
+                wheel2.node2 = self._resolve_node(args.pop(0))
+                wheel2.rigidity_node = self._resolve_node(args.pop(0))
+                wheel2.braked = args.pop(0)
+                wheel2.driven = args.pop(0)
+                wheel2.reference_node = self._resolve_node(args.pop(0))
+                wheel2.mass = args.pop(0)
+                wheel2.rim_spring = args.pop(0)
+                wheel2.rim_damp = args.pop(0)
+                wheel2.tyre_spring = args.pop(0)
+                wheel2.tyre_damp = args.pop(0)
+                wheel2.face_material = args.pop(0)
+                wheel2.tread_material = args.pop(0)
+                continue
+            
+            if self.mode == "meshwheels":
+                if self._comment(line): continue
+                self.meshwheels = getattr(self, "meshwheels", [])
+                meshwheel = self._read_meshwheel(line)
+                self.meshwheels.append(meshwheel)
+                continue
+            
+            if self.mode == "meshwheels2":
+                if self._comment(line): continue
+                self.meshwheels2 = getattr(self, "meshwheels2", [])
+                meshwheel2 = self._read_meshwheel(line)
+                self.meshwheels2.append(meshwheel2)
+                continue
+            
+            if self.mode == "flexbodywheels":
+                if self._comment(line): continue
+                self.flexbodywheels = getattr(self, "flexbodywheels", [])
+                
+                flexbodywheel = Flexbodywheel()
+                self.wheels2.append(flexbodywheel)
+                
+                args = self._parse_args(line)
+                flexbodywheel.rim_radius = args.pop(0)
+                flexbodywheel.tyre_radius = args.pop(0)
+                args.pop(0)
+                flexbodywheel.numrays = args.pop(0)
+                flexbodywheel.node1 = self._resolve_node(args.pop(0))
+                flexbodywheel.node2 = self._resolve_node(args.pop(0))
+                flexbodywheel.rigidity_node = self._resolve_node(args.pop(0))
+                flexbodywheel.braked = args.pop(0)
+                flexbodywheel.driven = args.pop(0)
+                flexbodywheel.reference_node = self._resolve_node(args.pop(0))
+                flexbodywheel.mass = args.pop(0)
+                flexbodywheel.rim_spring = args.pop(0)
+                flexbodywheel.rim_damp = args.pop(0)
+                flexbodywheel.tyre_spring = args.pop(0)
+                flexbodywheel.tyre_damp = args.pop(0)
+                flexbodywheel.direction = args.pop(0)
+                flexbodywheel.face_material = args.pop(0)
+                flexbodywheel.tread_material = args.pop(0)
+                continue
+            
+            if self.mode == "globals":
+                if self._comment(line): continue
+                self.globals = line
+                continue
+            
+            if self.mode == "cameras":
+                if self._comment(line): continue
+                self.cameras = getattr(self, "cameras", [])
+                
+                camera = Camera()
+                self.cameras.append(camera)
+                
+                args = self._parse_args(line)
+                camera.center = args.pop(0)
+                camera.back = args.pop(0)
+                camera.left = args.pop(0)
+                continue
+            
+            if self.mode == "engine":
+                if self._comment(line): continue 
+                self.engine = line
                 
                 continue
             
+            if self.mode == "texcoords":
+                continue
+            
+            if self.mode == "cab":
+                continue
+            
+            if self.mode == "commands":
+                pass
             #print line
+    
+    def _read_meshwheel(self, line):
+        meshwheel = Meshwheel()
+        args = self._parse_args(line)
+        meshwheel.tyre_radius = args.pop(0)
+        meshwheel.rim_radius = args.pop(0)
+        args.pop(0)
+        meshwheel.numrays = args.pop(0)
+        meshwheel.node1 = self._resolve_node(args.pop(0))
+        meshwheel.node2 = self._resolve_node(args.pop(0))
+        meshwheel.rigidity_node = self._resolve_node(args.pop(0))
+        meshwheel.braked = args.pop(0)
+        meshwheel.driven = args.pop(0)
+        meshwheel.reference_node = self._resolve_node(args.pop(0))
+        meshwheel.mass = args.pop(0)
+        meshwheel.spring = args.pop(0)
+        meshwheel.damp = args.pop(0)
+        meshwheel.side = args.pop(0)
+        meshwheel.face_material = args.pop(0)
+        meshwheel.tread_material = args.pop(0)
+        return meshwheel
 
     def _add_node(self, node):
         """Adds a node to the node list.
