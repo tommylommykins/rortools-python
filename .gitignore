@@ -29,3 +29,7 @@ pip-log.txt
 #Aptana/eclipse crap
 .project
 .pydevproject
+
+#emacs crap
+*~
+\#*#

@@ -1,4 +1,4 @@
-from RoRImporter import TruckParser
+import TruckParser
 
 import sys
 import pprint

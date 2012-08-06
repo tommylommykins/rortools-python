@@ -2,7 +2,7 @@ import re
 
 from Py3dsMax import mxs
 
-from RoRImporter import TruckParser
+import TruckParser
 reload(TruckParser)
 
 #def point3(lst):
