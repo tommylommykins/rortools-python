@@ -1,15 +1,16 @@
-from RoRImporter import TruckFileReader
+from RoRImporter import TruckParser
 
+import sys
 import pprint
+
+if len(sys.argv) != 2: raise Exception("Wrong number of arguments")
+
 
 class RoRImporterScaffold(object):
     def __init__(self):
-        self.importer = TruckFileReader.TruckFileReader()
-        self.importer.load_truck("C:/Users/thomas.green/Desktop/Aptana/test1/test.truck")
-        map(self.pprint_dict, self.importer.meshwheels2)
-        
-    def pprint_dict(self, obj):
-        pprint.pprint(obj.__dict__)
-    
+        self.parser = TruckParser.TruckParser()
+        self.parser.load_truck(sys.argv[1])
+        pprint.pprint(self.parser.meshwheels2)
+
         
 RoRImporterScaffold()

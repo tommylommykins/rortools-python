@@ -26,5 +26,6 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
+#Aptana/eclipse crap
 .project
 .pydevproject
