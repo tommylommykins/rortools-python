@@ -339,15 +339,18 @@ class TruckParser(object):
                 continue
 
             if self.mode == "beams":
-                if self._comment(line): continue #Comments are not used for parsing beams yet
                 self.beams = getattr(self, "beams", [])
+                
+                if self._comment(line):
+                    self.beams.append(line)
+                    continue
 
                 args = self._parse_args(line)
 
                 beam = {}
                 self.beams.append(beam)
 
-                beam['line']  = current_line
+                #beam['line']  = current_line
                 beam['node1'] = self._resolve_node(args.pop(0))
                 beam['node2'] = self._resolve_node(args.pop(0))
                 if args: beam['options'] = args.pop(0)
