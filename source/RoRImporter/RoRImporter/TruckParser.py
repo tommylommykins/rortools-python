@@ -258,7 +258,7 @@ class TruckParser(object):
                 defaults['deform'] = args.pop(0)
                 defaults['break_force']  = args.pop(0)
                 if args: defaults['diameter'] = args.pop(0)
-                if args: defaults['material'] = args.pop(0)
+                if args: defaults['ror_material'] = args.pop(0)
                 if args: defaults['deform_plastic'] = args.pop(0)
                 continue
 
