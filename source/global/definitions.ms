@@ -29,3 +29,15 @@ Global RoRBeam = attributes BeamsType
 		spinner  UiSupportLen   "Support Length"
 	)
 )
+
+Global RoRGlobals = attributes RoRGlobalsType
+(
+	parameters RoRGlobalParameters rollout:RoRGlobalsRollout
+	(
+		global_data ui:ui_global_data type:#string default:""
+	)
+	rollout RoRGlobalsRollout "Global Data"
+	(
+		edittext ui_global_data "" height:300
+	)
+)

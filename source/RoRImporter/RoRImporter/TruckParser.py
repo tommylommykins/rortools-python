@@ -14,6 +14,9 @@ class TruckParser(object):
         "soundsources", "soundsources2", "soundsources3", "envmap", "managedmaterials", "BTS_SECTIONCONFIG", "torquecurve", 
         "advdrag", "axles", "shocks2", "triggers", "railgroups", "slidenodes", "flares2", "animators", "nodecollision", 
         "description", "videocamera", "hooks", "lockgroups", "camerarail", "end"]
+        
+        self.global_sections = ["globals", "engine", "help", "globeams", "engoption", "brakes", "guisettings", "minimass", "envmap",
+                                "torquecurve", "advdrag", "nodecollision", "description", "videocamera"]
 
     #Loads a file. Iterates through it and creates data structures which can later be queried.
     def load_truck(self, truck_file):
@@ -24,6 +27,9 @@ class TruckParser(object):
     def parse_truck(self, truck_file):
         """Reads a truck file. Incomplete. Sections that are written do not yet correctly
         handle expected data types of input values
+        
+        Note: This method very closely and deliberately follows the logic of the parser
+        in serializedrig.cpp. 
         """
         truck_file_contents = open(truck_file).read()
 
@@ -42,48 +48,50 @@ class TruckParser(object):
                 if line == section:
                     print "MODE" + self.mode
                     self.mode = section
+                    if line in self.global_sections:
+                        self._add_global_data("\n" + line)
                     #Note: In the sourcecode, the mode queue is currently never actually used for anything, so
                     #it is not implemented here
                     next_line = True
             if next_line:
                 continue
 
-            try:
-                self.real_truck_name
-            except:
-                self.real_truck_name = line
+            self.truck_name_found = getattr(self, "truck_name_found", False)
+            if not self.truck_name_found:
+                self.truck_name = line 
+                self._add_global_data(line)
+                self.truck_name_found = True
                 continue
 
             if line == "end":
                 return
 
             if line == "patchEngineTorque":
-                self.patch_engine_torque = True
+                self._add_global_data("\n" + line)
                 continue
 
             if line == "end_description":
+                self._add_global_data(line)
                 self.mode = "NONE"
                 continue
 
             if line == "end_comment":
+                self._add_global_data(line)
                 self.mode = "NONE"
                 continue
 
             #TODO: Compatibility mode
             if line == "end_section":
                 self.mode = "NONE"
+                self._add_global_data(line)
                 continue
 
             if self.mode == "description":
-                try:
-                    self.description
-                except:
-                    self.description = line
-                else:
-                    self.description = self.description + "\n" + line
+                self._add_global_data(line)
                 continue
 
             if self.mode == "comment":
+                self._add_global_data(line)
                 continue
 
             if self.mode == "section":
@@ -91,23 +99,23 @@ class TruckParser(object):
 
             #oneliners
             if line == "forwardcommands":
-                self.forward_commands = True 
+                self._add_global_data("\n" + line)
                 continue
 
-            if line == "importcommands":
-                self.import_commands = True 
+            if line == "importcommands": 
+                self._add_global_data("\n" + line)
                 continue
 
             if line == "rollon":
-                self.wheel_contact_requested = True 
+                self._add_global_data("\n" + line) 
                 continue
 
             if line == "rescuer":
-                self.rescuer = True 
+                self._add_global_data("\n" + line) 
                 continue
 
             if line == "disabledefaultsounds":
-                self.disable_default_sounds  = True
+                self._add_global_data("\n" + line)
                 continue
 
             #ignoring sections
@@ -122,7 +130,7 @@ class TruckParser(object):
                 continue
 
             if line.startswith("fileinfo"):
-                self.file_info = line
+                self._add_global_data(line)
                 continue
 
             if line.startswith("extcamera"):
@@ -135,53 +143,51 @@ class TruckParser(object):
                 continue
 
             if line.startswith("submesh_groundmodel"):
-                args = self._parse_args(line)
-                args.pop(0)
-                self.submesh_ground_model = args.pop(0)
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("SlopeBrake"):
-                self.slope_brake = line
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("AntiLockBrakes"):
-                self.anti_lock_brake = line
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("TractionControl"):
-                self.traction_control = line
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("cruisecontrol"):
-                self.cruise_control = line
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("speedlimiter"):
-                self.speed_limiter = line
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("fileformatversion"):
-                self.file_format_version = line
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("author"):
-                self.author = line
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("slidenode_connect_instantly"):
-                self.slidenode_connect_instantly = True
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("enable_advanced_deformation"):
-                self.enable_advanced_deformation = True
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("lockgroup_default_nolock"):
-                self.lockgroup_default_nolock = True
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("set_shadows"):
-                self.shadow_mode = self._parse_args(line)[1]
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("prop_camera_mode"):
@@ -217,7 +223,7 @@ class TruckParser(object):
                 continue
 
             if line.startswith("set_managedmaterials_options"):
-                self.managed_materials_options = self._parse_args(line).pop(0)
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("set_beam_defaults_scale"):
@@ -236,7 +242,7 @@ class TruckParser(object):
                 continue
 
             if line.startswith("guid"):
-                self.guid = self._parse_args(line)[1]
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("set_beam_defaults"):
@@ -292,7 +298,7 @@ class TruckParser(object):
                 continue
 
             if line.startswith("set_skeleton_settings"):
-                self.skeleton_settings = line
+                self._add_global_data("\n" + line)
                 continue
 
             if line.startswith("backmesh"):
@@ -307,7 +313,7 @@ class TruckParser(object):
                 continue
 
             if line.startswith("set_collision_range"):
-                self.collision_range = self._parse_args(line)[1]
+                self._add_global_data("\n" + line)
                 continue
 
             if self.mode == "nodes" or self.mode == "nodes2":
@@ -350,7 +356,7 @@ class TruckParser(object):
                 beam = {}
                 self.beams.append(beam)
 
-                #beam['line']  = current_line
+                beam['line']  = current_line
                 beam['node1'] = self._resolve_node(args.pop(0))
                 beam['node2'] = self._resolve_node(args.pop(0))
                 if args: beam['options'] = args.pop(0)
@@ -555,8 +561,7 @@ class TruckParser(object):
                 continue
             
             if self.mode == "globals":
-                if self._comment(line): continue
-                self.globals = line
+                self._add_global_data(line)
                 continue
             
             if self.mode == "cameras":
@@ -573,9 +578,7 @@ class TruckParser(object):
                 continue
             
             if self.mode == "engine":
-                if self._comment(line): continue 
-                self.engine = line
-                
+                self._add_global_data(line)
                 continue
             
             if self.mode == "texcoords":
@@ -648,3 +651,8 @@ class TruckParser(object):
     def _comment(self, line):
         return line[0] == ";"
     
+    def _add_global_data(self, data):
+        self.global_data = getattr(self, "global_data", "")
+        self.global_data += data + "\n"
+        
+
