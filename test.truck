@@ -44,8 +44,8 @@ is
 end_description
 
 set_beam_defaults_scale 0, 1, 2, 3
-set_beam_defaults_scale a, b, c, d
-set_beam_defaults_scale one, two, three, four
+;set_beam_defaults_scale a, b, c, d
+;set_beam_defaults_scale one, two, three, four
 
 set_node_defaults -1, -1, -1, -1
 

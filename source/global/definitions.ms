@@ -4,10 +4,10 @@ Global RoRBeam = attributes BeamsType
 (
 	parameters BeamParameters rollout:beamRollout
 	(
-		spring         ui:UiSpring        type:#integer default: -1
-		damp           ui:UiDamping       type:#integer default: -1
-		deform         ui:UiDeformation   type:#integer default: -1
-		break_force    ui:UiBreaking      type:#integer default: -1
+		spring         ui:UiSpring        type:#float   default: -1
+		damp           ui:UiDamping       type:#float   default: -1
+		deform         ui:UiDeformation   type:#float   default: -1
+		break_force    ui:UiBreaking      type:#float   default: -1
 		diameter       ui:UiDiameter      type:#float   default: -1
 		ror_material   ui:UiRoR_Material  type:#string  default:"tracks/beam"
 		deform_plastic ui:UiDeformPlastic type:#float   default: -1

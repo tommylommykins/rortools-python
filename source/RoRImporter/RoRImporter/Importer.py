@@ -26,30 +26,53 @@ class Importer:
         """
         self._make_beam_object_set("beam_1")
         for i, beam in enumerate(self.parser.beams):
-            if beam.__class__ == str:
-                if i == 0:
-                    self._make_beam_object_set(beam)
-                else:
-                    self._make_beam_object_set(beam, self._applicable_beam_default(self.parser.beams[i - 1]))
-                continue
             
-            if self._new_beam_default_in_beam_section(beam):
-                self._make_beam_object_set("temp", self._applicable_beam_default(beam))
+            #Create a new beam object if necessary
+            if self._new_comment_in_beam_section(beam) or \
+                self._new_beam_default_in_beam_section(beam):
+                comment = self._applicable_comment(beam)
+                defaults = self._applicable_beam_default(beam)
+                self._make_beam_object_set(comment, defaults)
             
+            #Add a beam
             beam_object = self._select_beam_object(beam)
             start_point = self.node_positions[beam['node1']]
             end_point = self.node_positions[beam['node2']]
-            print beam
             self._draw_line(beam_object, start_point, end_point) 
             
     def _draw_line(self, beam_object, pos1, pos2):
         """Draws a line between two points of a line object
         """
-        print beam_object
         spline = mxs.AddNewSpline(beam_object)
         mxs.AddKnot(beam_object, spline, Names.CORNER, Names.LINE, pos1)
         mxs.AddKnot(beam_object, spline, Names.CORNER, Names.LINE, pos2)
         mxs.UpdateShape(beam_object)
+        
+    def _new_comment_in_beam_section(self, beam):
+        """To provide differentiation between beams, whenever a comment is reached in the
+        truck file, a new 3dsmax spline object is created. This method detects when a new
+        comment has been found. 
+        """
+        current_comment = self._applicable_comment(beam)
+        if not hasattr(self, "previous_comment"):
+            self.previous_comment = current_comment
+            return True
+        
+        if self.previous_comment == current_comment:
+            return False
+        
+        self.previous_comment = current_comment
+        return True
+    
+    def _applicable_comment(self, beam):
+        """Gets previous comment relative to the line of the specified beam in the truck file.
+        """
+        if not hasattr(self.parser, "comments"): return None
+        specified_line = beam['line']
+        sorted_comments = sorted(self.parser.comments, key=lambda comment: comment['line_no'])
+        for comment in reversed(sorted_comments):
+            if comment['line_no'] < specified_line: return comment['text']
+        return None
         
     def _new_beam_default_in_beam_section(self, beam):
         """To correctly implement set_beam_defaults, a new set of beam objects must be created
@@ -60,7 +83,7 @@ class Importer:
             self.previous_beam_default = current_default
             return True
         
-        if self._applicable_beam_default(beam) == current_default:
+        if self.previous_beam_default == current_default:
             return False
         
         self.previous_beam_default = current_default
@@ -72,7 +95,7 @@ class Importer:
         if not hasattr(self.parser, "beam_defaults"): return None
         specified_line = beam['line']
         sorted_defaults = sorted(self.parser.beam_defaults, key=lambda default: default['line'])
-        for default in sorted_defaults:
+        for default in reversed(sorted_defaults):
             if default['line'] < specified_line: return default
         return None
         
@@ -136,34 +159,40 @@ class Importer:
         self._delete_unused_beam_objects()
         combinations = self._all_combinations(("invisible", "rope", "support"))
         name = "beam_" + self._make_beam_name(name)
-        #print "making " + name
-        ret = {}
+        self.beam_object_set = {}
         
         for combination in combinations:
+            #Generate a python-name for each combination 
             combination_name = "_".join(combination)
-            beam_object_name = name + "_" + combination_name
-            beam_object = self._spline_shape(beam_object_name)
-            ret[combination_name] = beam_object
-            mxs.CustAttributes.add(beam_object, mxs.RoRBeam)
             
+            #generate a 3ds-max-name for each combination
+            beam_object_name = name + "_" + combination_name
+            beam_object = self._make_beam_object(beam_object_name)
+            self.beam_object_set[combination_name] = beam_object
             for property_name in combination:
                 setattr(beam_object, property_name, True)
                 
-            if beam_defaults is not None:
-                beam_object.spring = beam_defaults['spring'] 
-                beam_object.damp = beam_defaults['damp']   
-                beam_object.deform = beam_defaults['deform'] 
-                beam_object.break_force = beam_defaults['break_force']  
-                if 'diameter' in beam_defaults: beam_object.diameter = beam_defaults['diameter'] 
-                if 'ror_material' in beam_defaults: beam_object.ror_material = beam_defaults['ror_material']
-                if 'deform_plastic' in beam_defaults: beam_object.deform_plastic = beam_defaults['deform_plastic']
+            if beam_defaults is not None: self._apply_beam_defaults(beam_object, beam_defaults)
                 
         #normal (ie. no options) is a special case:
-        normal = self._spline_shape(name)
-        mxs.CustAttributes.add(normal, mxs.RoRBeam)
-        #FIXME: set_beam_defaults here
-        ret['normal'] = normal
-        self.beam_object_set = ret
+        normal = self._make_beam_object(name)
+        if beam_defaults is not None: self._apply_beam_defaults(normal, beam_defaults)
+        self.beam_object_set['normal'] = normal
+        
+    def _make_beam_object(self, name):
+        beam_object = self._spline_shape(name)
+        mxs.CustAttributes.add(beam_object, mxs.RoRBeam)
+        return beam_object
+        
+    def _apply_beam_defaults(self, beam_object, beam_defaults):
+        beam_object.spring = int(beam_defaults['spring'])
+        beam_defaults['damp'] 
+        beam_object.damp = beam_defaults['damp']   
+        beam_object.deform = beam_defaults['deform'] 
+        beam_object.break_force = beam_defaults['break_force']  
+        if 'diameter' in beam_defaults: beam_object.diameter = beam_defaults['diameter'] 
+        if 'ror_material' in beam_defaults: beam_object.ror_material = beam_defaults['ror_material']
+        if 'deform_plastic' in beam_defaults: beam_object.deform_plastic = beam_defaults['deform_plastic']
     
     def _delete_unused_beam_objects(self):
         """Deletes all objects in a beam object set if they contain no beams.
