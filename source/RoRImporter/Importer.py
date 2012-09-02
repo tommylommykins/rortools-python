@@ -11,7 +11,7 @@ import Names; reload(Names)
 class Importer:
     def __init__(self):
         #Load global RoR data definitions
-        mxs.fileIn("../global/definitions.ms")
+        mxs.fileIn("global/definitions.ms")
         self.parser = TruckParser.TruckParser()
         self.parser.load_truck(mxs.getopenfilename())
         self._load_node_positions()
