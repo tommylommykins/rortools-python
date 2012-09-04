@@ -1,6 +1,6 @@
 from Py3dsMax import mxs
 import re
-import BeamObject; reload(BeamObject)
+import BeamObject
 
 class BeamObjectSet(object):
     def __init__(self, name, beam_defaults):

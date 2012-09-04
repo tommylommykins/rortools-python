@@ -3,21 +3,17 @@
 
 from Py3dsMax import mxs
 
-import re
-
-import TruckParser; reload(TruckParser)
-import Names; reload(Names)
-import BeamObject; reload(BeamObject)
-import BeamObjectSet; reload(BeamObjectSet)
+from TruckParser import *
+import Names
+from BeamObject import *
+from BeamObjectSet import *
 
 class Importer:
     def __init__(self):
         #Load global RoR data definitions
         mxs.fileIn("global/definitions.ms")
-        self.parser = TruckParser.TruckParser()
+        self.parser = TruckParser()
         self.parser.load_truck(mxs.getopenfilename())
-        for d in self.parser.beam_defaults:
-            print d
         self._load_node_positions()
         self._import_global_data()
         self.make_node_beam()
@@ -28,17 +24,16 @@ class Importer:
     def make_node_beam(self):
         """Generates the 3ds Max representation of the beams of a truck.
         """
-        beam_set = BeamObjectSet.BeamObjectSet("beam_1", {'line': 0, 'spring': -987,
-                                                                  'damp': -1, 'deform':-1,
-                                                                  'break_force': 0 })
+        beam_set = BeamObjectSet("beam_1", {'line': 0, 'spring':-987,
+                                            'damp':-1, 'deform':-1,
+                                            'break_force': 0 })
         for i, beam in enumerate(self.parser.beams):
-            
             #Create a new beam object if necessary
             if self._new_beam_section_required(beam):
                 comment = self._applicable_comment(beam)
                 defaults = self._applicable_beam_default(beam)
                 beam_set.delete_unused_beam_objects()
-                beam_set = BeamObjectSet.BeamObjectSet(comment, defaults)
+                beam_set = BeamObjectSet(comment, defaults)
             
             #Add a beam
             beam_object = beam_set.select_beam_object(beam)
@@ -104,7 +99,6 @@ class Importer:
         sorted_defaults = sorted(self.parser.beam_defaults, key=lambda default: default['line'])
         for default in reversed(sorted_defaults):
             if default['line'] < specified_line:
-                print default 
                 return default
             
                  

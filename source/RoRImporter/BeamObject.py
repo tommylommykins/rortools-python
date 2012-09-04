@@ -1,7 +1,7 @@
 from Py3dsMax import mxs
 
 import re
-import Names; reload(Names)
+import Names
 
 class BeamObject(object):
     def __init__(self):
