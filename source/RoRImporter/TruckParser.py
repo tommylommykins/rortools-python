@@ -261,7 +261,9 @@ class TruckParser(object):
             return
 
         if line.startswith("set_beam_defaults"):
-            self.beam_defaults = getattr(self, "beam_defaults", [])
+            self.beam_defaults = getattr(self, "beam_defaults", [{'line': 0, 'spring': -123,
+                                                                  'damp': -1, 'deform':-1,
+                                                                  'break_force': 0 }])
             defaults = {}
             self.beam_defaults.append(defaults)
 
