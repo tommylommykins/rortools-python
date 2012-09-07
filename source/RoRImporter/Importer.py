@@ -39,7 +39,8 @@ class Importer:
             beam_object = beam_set.select_beam_object(beam)
             start_point = self.node_positions[beam['node1']]
             end_point = self.node_positions[beam['node2']]
-            beam_object.draw_line(start_point, end_point) 
+            beam_object.draw_line(start_point, end_point)
+        beam_set.delete_unused_beam_objects() 
             
     def _new_beam_section_required(self, beam):
         if not (self._new_comment_in_beam_section(beam) or

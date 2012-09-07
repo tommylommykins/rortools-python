@@ -47,6 +47,7 @@ class RoRBeam(BeamObject):
         """
         parsed_name = parsed_name.strip()
         parsed_name = re.sub(r'^;', "", parsed_name)
+        parsed_name = re.sub(r'^(beam_)?', "beam_", parsed_name)
         end_of_name_matcher = re.compile(r'_(invisible|rope|support)\d*$', re.I)
         while re.search(end_of_name_matcher, parsed_name):
             parsed_name = re.sub(end_of_name_matcher, "", parsed_name)
