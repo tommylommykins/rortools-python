@@ -1,9 +1,11 @@
 import Exporter
 import Node
-import FilteredNodeSet
+import Beam
+import Position
 
 reload(Exporter)
 reload(Node)
-reload(FilteredNodeSet)
+reload(Beam)
+reload(Position)
 
-__all__ = ["Exporter", "Node", "FilteredNodeSet"]
+__all__ = ["Exporter", "Node", "Beam", "Position"]

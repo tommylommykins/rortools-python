@@ -365,7 +365,6 @@ class TruckParser(object):
             self.beams = getattr(self, "beams", [])
             
             if self._comment(line):
-            #    self.beams.append(line)
                 return
 
             args = self._parse_args(line)

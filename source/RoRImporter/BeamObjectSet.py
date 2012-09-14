@@ -1,5 +1,4 @@
 from Py3dsMax import mxs
-import re
 import BeamObject
 
 class BeamObjectSet(object):
@@ -78,7 +77,4 @@ class BeamObjectSet(object):
 
         #default, used for invalid arguments 
         return self.beam_object_set['normal']
-    
-    
-    
     
