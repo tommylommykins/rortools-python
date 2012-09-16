@@ -1,14 +1,18 @@
 from Py3dsMax import mxs
 
 import Position
+import MaxObjectCustAttribute; reload(MaxObjectCustAttribute)
 
-class Beam(object):
+class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
+    """A class for exporting the beams of a truck."""
     def __init__(self, max_object, nodes):
         self.nodes = nodes
         self.max_object = max_object
         self._split_lines()
         
     def render(self):
+        """Generates the truck file representation of the 3ds max beam object. 
+        """
         ret = ""
         ret += self._render_beam_header()
         for positions in self.beam_positions():
@@ -32,6 +36,8 @@ class Beam(object):
         return ret
             
     def _render_set_beam_defaults(self):
+        if not self.has_custattribute(mxs.RoRBeam):
+            mxs.CustAttributes.add(self.max_object, mxs.RoRBeam)
         ret = "set_beam_defaults" 
         ret += " "  + str(self.max_object.spring)
         ret += ", " + str(self.max_object.damp)
@@ -60,7 +66,6 @@ class Beam(object):
         if not ret: return ""
         return ", " + ret
         
-    
     def _closest_node(self, pos):
         the_lambda = lambda acc, candidate: self._closer_node_to_pos(acc, candidate, pos)
         return reduce(the_lambda, self.nodes, self.nodes[0])
