@@ -84,7 +84,7 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
         loaded.
         """
         if not mxs.SplitBeam.__class__.__name__ == "value_wrapper":
-            mxs.fileIn("C:/Users/t/Desktop/rortools-python/source/RoRExporter/splitbeam.ms")
+            mxs.fileIn("rortools/RoRExporter/splitbeam.ms")
         mxs.SplitBeam(self.max_object)
 
 def generate_beams(beams, nodes):

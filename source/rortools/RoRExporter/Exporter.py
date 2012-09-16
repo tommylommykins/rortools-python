@@ -5,19 +5,19 @@ import Node
 import Beam
 import GlobalData
 
-from ..RoRImporter import RoRImporter
+#from ..RoRImporter import RoRImporter
 
 class Exporter(object):
     def __init__(self):
         self.export_global_data()
-        #self.export_nodes()
-        #self.export_beams()
+        self.export_nodes()
+        self.export_beams()
         
     def export_global_data(self):
         """Exports all data that is not associated with a specific max object.
         """
         globalDataBoxes = GlobalData.GlobalData(self.get_objects_by_name("global_data"))
-        print GlobalData.render()
+        #print GlobalData.render()
         
         
     def export_nodes(self):

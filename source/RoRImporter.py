@@ -6,10 +6,8 @@ import inspect, os
 original_working_directory = os.getcwd()
 try:
     os.chdir(os.path.dirname(inspect.getfile(inspect.currentframe())))
-    import RoRImporter; reload(RoRImporter)
-    RoRImporter.Importer.Importer()
+    import rortools; reload(rortools)
+    rortools.RoRImporter.Importer.Importer()
 finally: pass
 
 os.chdir(original_working_directory)
-
-

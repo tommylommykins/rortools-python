@@ -11,7 +11,7 @@ from BeamObjectSet import *
 class Importer:
     def __init__(self):
         #Load global RoR data definitions
-        mxs.fileIn("global/definitions.ms")
+        mxs.fileIn("rortools/global/definitions.ms")
         self.parser = TruckParser()
         self.parser.load_truck(mxs.getopenfilename())
         self._load_node_positions()
