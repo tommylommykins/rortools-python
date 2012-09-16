@@ -37,11 +37,18 @@ class FilteredNodeSet(object):
         if len(nodes_too_close) == 0: self.nodes.append(candidate_node)
 
 def generate_nodes(beam_objs):
-        unfiltered_nodes = _read_nodes(beam_objs)
-        node_set = FilteredNodeSet(0.1)
-        for node in unfiltered_nodes:
-            node_set.add_node(node)
-        return node_set.nodes
+    print "nodes\n"
+    unfiltered_nodes = _read_nodes(beam_objs)
+    node_set = FilteredNodeSet(0.1)
+    for node in unfiltered_nodes:
+        node_set.add_node(node)
+    return node_set.nodes
+            
+def render_nodes(nodes):
+    ret = ""
+    for i, node in enumerate(nodes):
+        ret += str(i) + ", " + str(node.position.x) + ", " + str(node.position.y) + ", " + str(node.position.z) + "\n"
+    return ret
 
 def _read_nodes(beam_objs):
     knots = []

@@ -1,0 +1,3 @@
+MyTruck
+globals
+10000, 1000, tracks/semi

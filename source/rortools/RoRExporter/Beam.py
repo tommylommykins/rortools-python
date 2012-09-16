@@ -10,25 +10,49 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
         self.max_object = max_object
         self._split_lines()
         
-    def render(self):
+    def render(self, preexisting_beams):
         """Generates the truck file representation of the 3ds max beam object. 
         """
         ret = ""
         ret += self._render_beam_header()
-        for positions in self.beam_positions():
-            ret += self._render_individual_beam(positions[0], positions[1]) + "\n"
+        unique_beams = self.unique_beams(preexisting_beams)
+        for positions in unique_beams:
+            ret += self._render_individual_beam(positions[0], positions[1])
         return ret
     
-    def beam_positions(self):
+    def unique_beams(self, preexisting_beams):
+        """gets the beams in this beam object which are not already in another beam object.
+        Also appends those beams to a global list of all beams exported so far
+        
+        the global list written into the class variable update_preexisting_beams. 
+        """
+        unique_beams = []
+        for node_pair in self.all_beams():
+            #Ignore beams starting and ending at the same vertex.
+            if len(set(node_pair)) == 1:
+                continue
+            
+            node_pair = tuple(sorted(node_pair))
+            if node_pair not in preexisting_beams:
+                unique_beams.append(node_pair)
+                preexisting_beams.add(node_pair)
+        self.updated_preexisting_beams = preexisting_beams
+        return unique_beams
+    
+    def all_beams(self):
+        """for each beam in the object. returns the start and end nodes.
+        """
         num_splines = mxs.numsplines(self.max_object)
+        all_beams = []
         for spline_no in range(1, num_splines + 1):
             num_knots = mxs.numknots(self.max_object, spline_no)
             knot_pair = []
             for knot_no in range(1, num_knots + 1):
-                pass
                 pos = (Position.Position(str(mxs.getKnotPoint(self.max_object, spline_no, knot_no))))
                 knot_pair.append(pos)
-            yield knot_pair
+            knot_pair = map( lambda knot_pos: self.nodes.index(self._closest_node(knot_pos)), knot_pair)
+            all_beams.append(sorted(knot_pair))
+        return sorted(all_beams)
     
     def _render_beam_header(self):
         ret = "\n;" + self.max_object.name + "\n"
@@ -48,14 +72,8 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
         ret += ", " + str(self.max_object.deform_plastic)
         return ret
     
-    def _render_individual_beam(self, pos1, pos2):
-        node1 = self._closest_node(pos1)
-        index1 = self.nodes.index(node1)
-        
-        node2 = self._closest_node(pos2)
-        index2 = self.nodes.index(node2)
-        
-        return str(index1) + ", " + str(index2) + self._render_beam_flags()
+    def _render_individual_beam(self, pos1, pos2):        
+        return str(pos1) + ", " + str(pos2) + self._render_beam_flags() + "\n"
     
     def _render_beam_flags(self):
         ret = ""
@@ -90,6 +108,9 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
 def generate_beams(beams, nodes):
     print "beams"
     beams = map(lambda beam: Beam(beam, nodes), beams)
+    extant_beams = set()
+    ret = ""
     for beam in beams:
-        print beam.render()
-        
+        ret += beam.render(extant_beams) + "\n"
+        extant_beams = beam.updated_preexisting_beams
+    return ret

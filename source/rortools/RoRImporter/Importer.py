@@ -7,6 +7,7 @@ from TruckParser import *
 import Names
 from BeamObject import *
 from BeamObjectSet import *
+import GlobalDataBox; reload(GlobalDataBox)
 
 class Importer:
     def __init__(self):
@@ -109,11 +110,7 @@ class Importer:
         This allows it to be edited and exported later
         """
         #Make the box
-        global_data_box = mxs.box(length=0.08, width=0.08, height=0.08, \
-                                  pos=mxs.Point3(0, 0, 0), wirecolor=mxs.red)
-        global_data_box.name = "global_data_" + self.parser.truck_name
-        mxs.CustAttributes.add(global_data_box, mxs.RoRGlobals)
-        global_data_box.global_data = self.parser.global_data
+        GlobalDataBox.GlobalDataBox(self.parser.truck_name, self.parser.global_data)
     
     def _spline_shape(self, name):
         """Generates an empty 3ds max splineshape"""
