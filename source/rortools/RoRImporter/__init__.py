@@ -1,15 +1,17 @@
-import Importer
+import Beam
+import BeamThing
 import Camera
+import ImportBeams
+import Importer
 import TruckParser
 import Names
-import BeamObject
-import BeamObjectSet
 
-reload(Importer)
+reload(Beam)
+reload(BeamThing)
 reload(Camera)
+reload(ImportBeams)
+reload(Importer)
 reload(TruckParser)
 reload(Names)
-reload(BeamObject)
-reload(BeamObjectSet)
 
-__all__ = ["Importer", "TruckParser", "Names", "BeamObject", "BeamObjectSet", "Camera"]
+__all__ = ["Beam", "BeamThing", "Camera", "ImportBeams", "Importer", "TruckParser", "Names"]

@@ -49,8 +49,8 @@ class TruckParser(object):
         if not line:
             return
         
+        self.comments = getattr(self, "comments", [])
         if self._comment(line):
-            self.comments = getattr(self, "comments", [])
             comment = {}
             comment['text'] = line[1:]
             comment['line_no'] = line_no
@@ -147,6 +147,7 @@ class TruckParser(object):
             self._add_global_data(line)
             return
 
+        self.external_camera = getattr(self, "external_camera", {})
         if line.startswith("extcamera"):
             args = self._parse_args(line)
             args.pop(0)
@@ -204,8 +205,8 @@ class TruckParser(object):
             self._add_global_data("\n" + line)
             return
 
+        self.prop_camera_modes = getattr(self, "prop_camera_modes", [])
         if line.startswith("prop_camera_mode"):
-            self.prop_camera_modes = getattr(self, "prop_camera_modes", [])
             mode = {}
             self.prop_camera_modes.append(mode)
 
@@ -213,8 +214,8 @@ class TruckParser(object):
             mode['value'] = self._parse_args(line)[1]
             return
 
+        self.flexbody_camera_modes = getattr(self, "flexbody_camera_modes", [])
         if line.startswith("flexbody_camera_mode"):
-            self.flexbody_camera_modes = getattr(self, "flexbody_camera_modes", [])
             mode = {}
             self.flexbody_camera_modes.append(mode)
 
@@ -222,8 +223,8 @@ class TruckParser(object):
             mode['value'] = self._parse_args(line)[1]
 
 
+        self.add_animation = getattr(self, "animation", [])
         if line.startswith("add_animation"):
-            self.add_animation = getattr(self, "animation", [])
             anim = {}
             self.add_animation.append(anim)
 
@@ -240,8 +241,8 @@ class TruckParser(object):
             self._add_global_data("\n" + line)
             return
 
+        self.beam_defaults_scale = getattr(self, "beam_defaults_scale", [])
         if line.startswith("set_beam_defaults_scale"):
-            self.beam_defaults_scale = getattr(self, "beam_defaults_scale", [])
             scale = {}
             self.beam_defaults_scale.append(scale)
 
@@ -259,11 +260,9 @@ class TruckParser(object):
         if line.startswith("guid"):
             self._add_global_data("\n" + line)
             return
-
+        
+        self.beam_defaults = getattr(self, "beam_defaults", [])
         if line.startswith("set_beam_defaults"):
-            self.beam_defaults = getattr(self, "beam_defaults", [{'line': 0, 'spring': -123,
-                                                                  'damp': -1, 'deform':-1,
-                                                                  'break_force': 0 }])
             defaults = {}
             self.beam_defaults.append(defaults)
 
@@ -279,8 +278,8 @@ class TruckParser(object):
             if args: defaults['deform_plastic'] = float(args.pop(0))
             return
 
+        self.inertia_defaults = getattr(self, 'inertia_defaults', [])
         if line.startswith("set_inertia_defaults"):
-            self.inertia_defaults = getattr(self, 'inertia_defaults', [])
             defaults = {}
             self.inertia_defaults.append(defaults)
 
@@ -299,8 +298,8 @@ class TruckParser(object):
             defaults['stop_function']  = args.pop(0)
             return
 
+        self.node_defaults = getattr(self, 'node_defaults', [])
         if line.startswith("set_node_defaults"):
-            self.node_defaults = getattr(self, 'node_defaults', [])
             defaults = {}
             self.node_defaults.append(defaults)
 
@@ -318,14 +317,13 @@ class TruckParser(object):
             self._add_global_data("\n" + line)
             return
 
+        self.backmeshes = getattr(self, "backmeshes", [])
         if line.startswith("backmesh"):
-            if not hasattr(self, 'backmeshes'): self.backmeshes = []
             self.backmeshes.append(line_no)
             return
 
+        self.submeshes = getattr(self, "submeshes", [])
         if line.startswith("submesh"):
-            if not hasattr(self, 'submeshes'):
-                self.submeshes = []
             self.submeshes.append(line_no)
             return
 
@@ -361,9 +359,8 @@ class TruckParser(object):
         if self.mode == "triggers":
             return
 
+        self.beams = getattr(self, "beams", [])
         if self.mode == "beams":
-            self.beams = getattr(self, "beams", [])
-            
             if self._comment(line):
                 return
 
@@ -378,10 +375,10 @@ class TruckParser(object):
             if args: beam['options'] = args.pop(0)
             if args: beam['support_length'] = int(args.pop(0))
             return
-        
+
+        self.triggers = getattr(self, "triggers", [])
         if self.mode == "triggers":
             if self._comment(line): return
-            self.triggers = getattr(self, "triggers", [])
             
             trigger = {}
             self.triggers.append(trigger)
@@ -397,9 +394,9 @@ class TruckParser(object):
             if args: trigger['boundary_timer'] = args.pop(0)
             return
             
+        self.shocks = getattr(self, "shocks", [])
         if self.mode == "shocks":
             if self._comment(line): return
-            self.shocks = getattr(self, "shocks", [])
             
             shock = {}
             self.shocks.append(shock)
@@ -420,10 +417,10 @@ class TruckParser(object):
             shock['precompression'] = args.pop(0)
             if args: shock['options'] = args.pop(0)
             return
-        
+
+        self.shocks = getattr(self, "shocks", [])
         if self.mode == "shocks2":
             if self._comment(line): return
-            self.shocks = getattr(self, "shocks", [])
             
             shock = {}
             self.shocks.append(shock)
@@ -444,16 +441,16 @@ class TruckParser(object):
             shock['precompression'] = args.pop(0)
             if args: shock['options'] = args.pop(0)
             return
-        
+
+        self.fixes = getattr(self, "fixes", [])
         if self.mode == "fixes":
-            self.fixes = getattr(self, "fixes", [])
             if self._comment(line): return
             self.fixes.append(self._resolve_node(line))
             return
         
+        self.hydros = getattr(self, "hydros", [])
         if self.mode == "hydros":
             if self._comment(line): return
-            self.hydros = getattr(self, "hydros", [])
             
             hydro = {}
             self.hydros.append(hydro)
@@ -468,10 +465,10 @@ class TruckParser(object):
             if args: hydro['start_function'] = args.pop(0)
             if args: hydro['stop_function'] = args.pop(0)
             return
-        
+
+        self.animators = getattr(self, "animators", [])
         if self.mode == "animators":
             if self._comment(line): return
-            self.animators = getattr(self, "animators", [])
             
             animator = {}
             self.animators.append(animator)
@@ -482,10 +479,10 @@ class TruckParser(object):
             animator['factor'] = args.pop(0)
             animator['option'] = args.pop(0)
             return
-            
+
+        self.wheels = getattr(self, "wheels", [])
         if self.mode == "wheels":
             if self._comment(line): return
-            self.wheels = getattr(self, "wheels", [])
             
             wheel = {}
             self.wheels.append(wheel)
@@ -507,9 +504,9 @@ class TruckParser(object):
             wheel['tread_material'] = args.pop(0)
             return
         
+        self.wheels2 = getattr(self, "wheels2", [])
         if self.mode == "wheels2":
             if self._comment(line): return
-            self.wheels2 = getattr(self, "wheels2", [])
             
             wheel2 = {}
             self.wheels2.append(wheel2)
@@ -533,24 +530,24 @@ class TruckParser(object):
             wheel2['face_material'] = args.pop(0)
             wheel2['tread_material'] = args.pop(0)
             return
-        
+
+        self.meshwheels = getattr(self, "meshwheels", [])
         if self.mode == "meshwheels":
             if self._comment(line): return
-            self.meshwheels = getattr(self, "meshwheels", [])
             meshwheel = self._read_meshwheel(line)
             self.meshwheels.append(meshwheel)
             return
-        
+
+        self.meshwheels2 = getattr(self, "meshwheels2", [])        
         if self.mode == "meshwheels2":
             if self._comment(line): return
-            self.meshwheels2 = getattr(self, "meshwheels2", [])
             meshwheel2 = self._read_meshwheel(line)
             self.meshwheels2.append(meshwheel2)
             return
-        
+
+        self.flexbodywheels = getattr(self, "flexbodywheels", [])
         if self.mode == "flexbodywheels":
             if self._comment(line): return
-            self.flexbodywheels = getattr(self, "flexbodywheels", [])
             
             flexbodywheel = {}
             self.wheels2.append(flexbodywheel)
@@ -580,9 +577,9 @@ class TruckParser(object):
             self._add_global_data(line)
             return
         
+        self.cameras = getattr(self, "cameras", [])
         if self.mode == "cameras":
             if self._comment(line): return
-            self.cameras = getattr(self, "cameras", [])
             
             camera = {}
             self.cameras.append(camera)
