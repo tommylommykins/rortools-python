@@ -62,7 +62,7 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
         return ret
             
     def _render_set_beam_defaults(self):
-        if not self.has_custattribute(mxs.RoRBeam):
+        if not self.has_custattribute("BeamsType:BeamsType"):
             mxs.CustAttributes.add(self.max_object, mxs.RoRBeam)
         ret = "set_beam_defaults" 
         ret += " "  + str(self.max_object.spring)

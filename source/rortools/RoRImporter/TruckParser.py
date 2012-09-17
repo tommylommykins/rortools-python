@@ -588,9 +588,9 @@ class TruckParser(object):
             self.cameras.append(camera)
             
             args = self._parse_args(line)
-            camera['center'] = args.pop(0)
-            camera['back'] = args.pop(0)
-            camera['left'] = args.pop(0)
+            camera['center'] = self._resolve_node(args.pop(0))
+            camera['back'] = self._resolve_node(args.pop(0))
+            camera['left'] = self._resolve_node(args.pop(0))
             return
         
         if self.mode == "engine":

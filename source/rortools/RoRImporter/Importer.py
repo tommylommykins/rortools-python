@@ -8,16 +8,20 @@ import Names
 from BeamObject import *
 from BeamObjectSet import *
 import GlobalDataBox; reload(GlobalDataBox)
+import Camera; reload(Camera)
 
 class Importer:
-    def __init__(self):
+    def __init__(self, truck_file=None):
         #Load global RoR data definitions
         mxs.fileIn("rortools/global/definitions.ms")
         self.parser = TruckParser()
-        self.parser.load_truck(mxs.getopenfilename())
+        if truck_file is None:
+            truck_file = mxs.getopenfilename()
+        self.parser.load_truck(truck_file)
         self._load_node_positions()
         self._import_global_data()
         self.make_node_beam()
+        self.import_cameras()
         
     def _load_node_positions(self):
         self.node_positions = [mxs.Point3(n['x'], n['y'], n['z']) for n in self.parser.nodes]
@@ -41,7 +45,14 @@ class Importer:
             start_point = self.node_positions[beam['node1']]
             end_point = self.node_positions[beam['node2']]
             beam_object.draw_line(start_point, end_point)
-        beam_set.delete_unused_beam_objects() 
+        beam_set.delete_unused_beam_objects()
+        
+    def import_cameras(self):
+        for i, c in enumerate(self.parser.cameras):
+            Camera.Camera(i,
+                          self.node_positions[c['center']],
+                          self.node_positions[c['back']],
+                          self.node_positions[c['left']])
             
     def _new_beam_section_required(self, beam):
         if not (self._new_comment_in_beam_section(beam) or
