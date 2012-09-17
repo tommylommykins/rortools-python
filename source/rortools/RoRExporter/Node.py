@@ -37,7 +37,6 @@ class FilteredNodeSet(object):
         if len(nodes_too_close) == 0: self.nodes.append(candidate_node)
 
 def generate_nodes(beam_objs):
-    print "nodes\n"
     unfiltered_nodes = _read_nodes(beam_objs)
     node_set = FilteredNodeSet(0.1)
     for node in unfiltered_nodes:
@@ -45,7 +44,7 @@ def generate_nodes(beam_objs):
     return node_set.nodes
             
 def render_nodes(nodes):
-    ret = ""
+    ret = "nodes\n"
     for i, node in enumerate(nodes):
         ret += str(i) + ", " + str(node.position.x) + ", " + str(node.position.y) + ", " + str(node.position.z) + "\n"
     return ret

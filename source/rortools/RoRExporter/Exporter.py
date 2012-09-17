@@ -9,9 +9,9 @@ import GlobalData
 
 class Exporter(object):
     def __init__(self):
-        print self.export_global_data()
-        print self.export_nodes()
-        print self.export_beams()
+        self.export_global_data()
+        self.export_nodes()
+        self.export_beams()
         
     def export_global_data(self):
         """Exports all data that is not associated with a specific max object.

@@ -11,6 +11,7 @@ class Position(object):
         self.z = float(coords[2])
         
     def distance_to(self, other_position):
-        return math.sqrt(((self.x - other_position.x) ** 2) +
+        return math.sqrt(
+            ((self.x - other_position.x) ** 2) +
             ((self.y - other_position.y) ** 2) +
             ((self.z - other_position.z) ** 2))

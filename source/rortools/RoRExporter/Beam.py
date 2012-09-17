@@ -3,6 +3,8 @@ from Py3dsMax import mxs
 import Position
 import MaxObjectCustAttribute; reload(MaxObjectCustAttribute)
 
+import sys
+
 class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
     """A class for exporting the beams of a truck."""
     def __init__(self, max_object, nodes):
@@ -83,18 +85,18 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
         #support length not yet supported? D:
         if not ret: return ""
         return ", " + ret
-        
-    def _closest_node(self, pos):
-        the_lambda = lambda acc, candidate: self._closer_node_to_pos(acc, candidate, pos)
-        return reduce(the_lambda, self.nodes, self.nodes[0])
     
-    def _closer_node_to_pos(self, node1, node2, pos):
-        node1_distance = node1.position.distance_to(pos)
-        node2_distance = node2.position.distance_to(pos)
-        if node1_distance < node2_distance:
-            return node1
-        else:
-            return node2
+    def _closest_node(self, pos):
+        best_distance = sys.float_info.max
+        best_node = self.nodes[0] 
+        for node in self.nodes:
+            distance = node.position.distance_to(pos)
+            if distance == 0.0:
+                return node
+            if distance < best_distance:
+                best_distance = distance
+                best_node = node
+        return best_node 
     
     def _split_lines(self):
         """forces all the splines of an editable spline object to be one segment long
@@ -106,10 +108,9 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
         mxs.SplitBeam(self.max_object)
 
 def generate_beams(beams, nodes):
-    print "beams"
+    ret = "beams\n"
     beams = map(lambda beam: Beam(beam, nodes), beams)
     extant_beams = set()
-    ret = ""
     for beam in beams:
         ret += beam.render(extant_beams) + "\n"
         extant_beams = beam.updated_preexisting_beams
