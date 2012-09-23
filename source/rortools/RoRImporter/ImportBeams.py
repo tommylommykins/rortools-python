@@ -2,7 +2,7 @@ from Py3dsMax import mxs
 import Beam; reload(Beam)
 
 class BeamObjectBuilder(object):
-    def make_node_beam(self, node_positions, beams, comments, beam_defaults):
+    def make_node_beam(self, node_positions, beams, comments, beam_defaults, object_holder):
         """Generates the 3ds Max representation of the beams of a truck.
         """
         beam_set = BeamObjectSet("beam_1", {'line': 0, 'spring':-987,
@@ -15,6 +15,8 @@ class BeamObjectBuilder(object):
             if self._new_beam_section_required(beam, beam_defaults):
                 comment = self.comment_tracker.applicable_comment(beam)
                 defaults = self.beam_default_tracker.applicable_beam_default(beam)
+                beam_set.delete_unused_beam_objects()
+                beam_set.add_objects_to_object_holder(object_holder)
                 beam_set.new_set(comment, defaults)
             
             #Add a beam
@@ -23,6 +25,7 @@ class BeamObjectBuilder(object):
             end_point = node_positions[beam['node2']]
             beam_object.draw_line(start_point, end_point)
         beam_set.delete_unused_beam_objects()
+        beam_set.add_objects_to_object_holder(object_holder)
     
     def _new_beam_section_required(self, beam, beam_defaults):
         if not (self.comment_tracker.new_comment_in_beam_section(beam) or
@@ -98,17 +101,12 @@ class BeamObjectSet(object):
         so that individual beams can be placed in the appropriate subgroups. For each beam that 
         is imported, the appropriate subgroup is chosen by _select_beam_object. 
         """
-        #the old beam object set becomes unused at this point, so any empty objects should be
-        #deleted now.
-        if hasattr(self, "beam_object_set"):
-            self.delete_unused_beam_objects()
-        
         combinations = self._all_combinations(("invisible", "rope", "support"))
         self.beam_object_set = {}
         
         for combination in combinations: 
             python_name = "_".join(combination)
-            beam_object = BeamObject.RoRBeam(name)
+            beam_object = Beam.RoRBeam(name)
             beam_object.apply_beam_defaults(beam_defaults)
             self.beam_object_set[python_name] = beam_object
             
@@ -116,7 +114,7 @@ class BeamObjectSet(object):
                 setattr(beam_object, property_name, True)
                 
         #normal (ie. no options) is a special case:
-        normal = BeamObject.RoRBeam(name)
+        normal = Beam.RoRBeam(name)
         normal.apply_beam_defaults(beam_defaults)
         self.beam_object_set['normal'] = normal
     
@@ -124,14 +122,19 @@ class BeamObjectSet(object):
         """Deletes all objects in a beam object set if they contain no beams.
         Done because beam objects are pregenerated without first finding out whether
         all combinations are actually are needed or not, so some non-useful ones are
-        generated.
+        generated. 
         """
         if not hasattr(self, "beam_object_set"): 
             return
-        for beam_object in self.beam_object_set.itervalues():
+        for name, beam_object in self.beam_object_set.items():
             if mxs.numSplines(beam_object.max_object) == 0:
+                self.beam_object_set.pop(name)
                 mxs.delete(beam_object.max_object)
                 
+    def add_objects_to_object_holder(self, object_holder):
+        for beam_object in self.beam_object_set.itervalues():
+            object_holder.add_object(beam_object.max_object)
+
     def select_beam_object(self, beam):
         """Selects a beam object from a set, so that a beam may be placed into the correct one.
         The correct object is chosen by inspection of the arguments on the beam itself. 

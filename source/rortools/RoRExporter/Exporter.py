@@ -8,14 +8,20 @@ import Beam; reload(Beam)
 import GlobalData; reload(GlobalData)
 import Camera; reload(Camera)
 
+from .._global import MaxObjHolder as MaxObjHolder; reload(MaxObjHolder)
+
 class Exporter(object):
     def __init__(self):
-        mxs.fileIn("rortools/global/definitions.ms")
+        mxs.fileIn("rortools/_global/definitions.ms")
+        self.rotate_all_to_ror()
         data = ""
         data += self.export_global_data()
-        data += self.export_nodes()
+        data += self.export_nodes() #This has the side effect of generating self.nodes and self.node_positions
         data += self.export_beams()
         data += self.export_cameras()
+        data += self.export_cinecams()
+        data += "\nend\n"
+        self.rotate_all_to_max()
         print data
         
     def export_global_data(self):
@@ -23,12 +29,14 @@ class Exporter(object):
         """
         global_data_boxes = self.get_objects_by_name("global_data")
         return GlobalData.generate_global_data(global_data_boxes)
-        
+            
     def export_nodes(self):
         beam_objects = self.get_objects_by_name("beam")
         beam_objects = sorted(beam_objects, None, lambda b: b.name)
-        self.nodes = Node.generate_nodes(beam_objects)
-        return Node.render_nodes(self.nodes)
+        exporter = Node.NodeExporter(beam_objects)
+        self.nodes = exporter.nodes
+        self.node_positions = exporter.node_positions
+        return exporter.render_nodes()
         
     def export_beams(self):
         beam_objects = self.get_objects_by_name("beam")
@@ -37,6 +45,9 @@ class Exporter(object):
     def export_cameras(self):
         cameras = self.get_objects_by_name("camera_center", "camera_left", "camera_back")
         return Camera.generate_cameras(cameras, self.nodes)
+    
+    def export_cinecams(self):
+        return "cinecam\n0,0,0,0,1,2,3,4,5,6,7\n"
         
     def get_objects_by_name(self, *names):
         ret = []
@@ -46,3 +57,14 @@ class Exporter(object):
             native_named_objects = map(lambda obj: obj._nativePointer, named_objects)
             ret.extend(native_named_objects)
         return ret
+    
+    def rotate_all_to_ror(self):
+        #get all objects
+        objects = self.get_objects_by_name("")
+        holder = MaxObjHolder.MaxObjHolder(objects)
+        holder.rotate_from_max_to_ror()
+    
+    def rotate_all_to_max(self):
+        objects = self.get_objects_by_name("")
+        holder = MaxObjHolder.MaxObjHolder(objects)
+        holder.rotate_from_ror_to_max()

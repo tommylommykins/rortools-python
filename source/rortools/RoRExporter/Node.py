@@ -35,27 +35,34 @@ class FilteredNodeSet(object):
         distances = map(lambda other_node: candidate_node.position.distance_to(other_node.position), self.nodes)
         nodes_too_close = filter(lambda distance: self.max_distance >= distance, distances)
         if len(nodes_too_close) == 0: self.nodes.append(candidate_node)
-
-def generate_nodes(beam_objs):
-    unfiltered_nodes = _read_nodes(beam_objs)
-    node_set = FilteredNodeSet(0.1)
-    for node in unfiltered_nodes:
-        node_set.add_node(node)
-    return node_set.nodes
+        
+class NodeExporter(object):
+    def __init__(self, beam_objs):
+        unfiltered_nodes = self._read_nodes(beam_objs)
+        node_set = FilteredNodeSet(0.1)
+        for node in unfiltered_nodes:
+            node_set.add_node(node)
             
-def render_nodes(nodes):
-    ret = "nodes\n"
-    for i, node in enumerate(nodes):
-        ret += str(i) + ", " + str(node.position.x) + ", " + str(node.position.y) + ", " + str(node.position.z) + "\n"
-    return ret
+        self.nodes =  node_set.nodes
+        self.node_positions = self._generate_node_positions()
+        
+    def _generate_node_positions(self):
+        the_lambda = lambda node: lambda node: mxs.point3(node.position.x, node.position.y, node.position.z)
+        return map(the_lambda, self.nodes)
+            
+    def render_nodes(self):
+        ret = "nodes\n"
+        for i, node in enumerate(self.nodes):
+            ret += str(i) + ", " + str(node.position.x) + ", " + str(node.position.y) + ", " + str(node.position.z) + "\n"
+        return ret
 
-def _read_nodes(beam_objs):
-    knots = []
-    for beam_obj in beam_objs:
-        #print mxs.pyhelper.namify(beam_obj.name)
-        for spline_no in range(mxs.numsplines(beam_obj)):
-            spline_no += 1
-            for knot_no in range(mxs.numknots(beam_obj, spline_no)):
-                knot_no += 1
-                knots.append(mxs.getKnotPoint(beam_obj, spline_no, knot_no))
-    return sorted(map(Node, knots))
+    def _read_nodes(self, beam_objs):
+        knots = []
+        for beam_obj in beam_objs:
+            #print mxs.pyhelper.namify(beam_obj.name)
+            for spline_no in range(mxs.numsplines(beam_obj)):
+                spline_no += 1
+                for knot_no in range(mxs.numknots(beam_obj, spline_no)):
+                    knot_no += 1
+                    knots.append(mxs.getKnotPoint(beam_obj, spline_no, knot_no))
+        return sorted(map(Node, knots))

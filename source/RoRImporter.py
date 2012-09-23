@@ -8,6 +8,4 @@ try:
     os.chdir(os.path.dirname(inspect.getfile(inspect.currentframe())))
     import rortools.RoRImporter; reload(rortools.RoRImporter)
     rortools.RoRImporter.Importer.Importer()
-finally: pass
-
-os.chdir(original_working_directory)
+finally: os.chdir(original_working_directory)

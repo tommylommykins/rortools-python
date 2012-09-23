@@ -16,10 +16,13 @@ class Camera(NodeLookup.NodeLookup):
         self.nodes = nodes
     
     def render(self):
-        center_node = str(self.nearest_node(str(self.center.pos)))
-        back_node = str(self.nearest_node(str(self.back.pos)))
-        left_node = str(self.nearest_node(str(self.left.pos)))
-        return center_node + ", " + back_node + ", " + left_node
+        center_node = self.nearest_node(self.center.pos)
+        center_index = str(self.nodes.index(center_node))
+        back_node = self.nearest_node(self.back.pos)
+        back_index = str(self.nodes.index(back_node))
+        left_node = self.nearest_node(self.left.pos)
+        left_index = str(self.nodes.index(left_node))
+        return center_index + ", " + back_index + ", " + left_index
     
 def generate_cameras(cameras, nodes):
     ret = "cameras\n"
@@ -31,7 +34,7 @@ def generate_cameras(cameras, nodes):
         ret += Camera(c[0], c[1], c[2], nodes).render() + "\n"
     if len(ret.split("\n")) < 3:
         return generate_default_cameras(cameras, nodes)
-    return ret
+    return ret + "\n"
 
 def generate_default_cameras(cameras, nodes):
     map(lambda camera: mxs.delete(camera), cameras)

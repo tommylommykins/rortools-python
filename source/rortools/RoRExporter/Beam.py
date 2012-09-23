@@ -2,10 +2,11 @@ from Py3dsMax import mxs
 
 import Position
 import MaxObjectCustAttribute; reload(MaxObjectCustAttribute)
+import NodeLookup; reload(NodeLookup)
 
 import sys
 
-class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
+class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute, NodeLookup.NodeLookup):
     """A class for exporting the beams of a truck."""
     def __init__(self, max_object, nodes):
         self.nodes = nodes
@@ -52,7 +53,7 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
             for knot_no in range(1, num_knots + 1):
                 pos = (Position.Position(str(mxs.getKnotPoint(self.max_object, spline_no, knot_no))))
                 knot_pair.append(pos)
-            knot_pair = map( lambda knot_pos: self.nodes.index(self._closest_node(knot_pos)), knot_pair)
+            knot_pair = map( lambda knot_pos: self.nodes.index(self.nearest_node(knot_pos)), knot_pair)
             all_beams.append(sorted(knot_pair))
         return sorted(all_beams)
     
@@ -85,18 +86,6 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute):
         #support length not yet supported? D:
         if not ret: return ""
         return ", " + ret
-    
-    def _closest_node(self, pos):
-        best_distance = sys.float_info.max
-        best_node = self.nodes[0] 
-        for node in self.nodes:
-            distance = node.position.distance_to(pos)
-            if distance == 0.0:
-                return node
-            if distance < best_distance:
-                best_distance = distance
-                best_node = node
-        return best_node 
     
     def _split_lines(self):
         """forces all the splines of an editable spline object to be one segment long
