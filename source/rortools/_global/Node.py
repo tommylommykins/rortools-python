@@ -7,7 +7,7 @@ class Node(object):
             coords = map(lambda num: float(num), position_string[1:-1].split(","))
             self.position = Position.Position(coords)
         else:
-            self.position = Position.Position(coord_list)    
+            self.position = Position.Position(coord_list)
     
     def __cmp__(self, other):
         #For pairwise ordering. Sort by X, then Y, then Z

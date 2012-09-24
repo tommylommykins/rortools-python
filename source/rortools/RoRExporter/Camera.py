@@ -6,7 +6,8 @@ from .._global import Position; reload(Position)
 import Node; reload(Node)
 import NodeLookup; reload(NodeLookup)
 
-from .._global import Camera as ImporterCamera
+from .._global import Camera as ImporterCamera; reload(ImporterCamera)
+from .._global import Node; reload(Node)
 
 class Camera(NodeLookup.NodeLookup):
     def __init__(self, center, back, left, nodes):
@@ -28,7 +29,7 @@ def generate_cameras(cameras, nodes):
     ret = "cameras\n"
     for camera_no in range(max_camera(cameras) + 1):
         selected_cameras = select_cameras(camera_no, cameras)
-        if not cameras:
+        if not selected_cameras:
             continue
         c = selected_cameras
         ret += Camera(c[0], c[1], c[2], nodes).render() + "\n"
@@ -42,8 +43,12 @@ def generate_default_cameras(cameras, nodes):
     for node_no in range(3):
         node_pos = nodes[node_no].position
         positions.append(mxs.Point3(node_pos.x, node_pos.y, node_pos.z))
-    ImporterCamera.Camera(0, positions[0], positions[1], positions[2])
-    return "cameras\n0,1,2"
+    
+    node1 = Node.Node(position_string=str(positions[0]))
+    node2 = Node.Node(position_string=str(positions[1]))
+    node3 = Node.Node(position_string=str(positions[2]))
+    ImporterCamera.Camera(0, node1, node2, node3)
+    return "cameras\n0,1,2\n"
     
 def max_camera(cameras):
     camera_numbers = map(lambda camera: re.findall(r'\d$', camera.name), cameras)

@@ -7,6 +7,7 @@ import Node; reload(Node)
 import Beam; reload(Beam)
 import GlobalData; reload(GlobalData)
 import Camera; reload(Camera)
+import Cinecam; reload(Cinecam)
 
 from .._global import MaxObjHolder as MaxObjHolder; reload(MaxObjHolder)
 
@@ -47,7 +48,8 @@ class Exporter(object):
         return Camera.generate_cameras(cameras, self.nodes)
     
     def export_cinecams(self):
-        return "cinecam\n0,0,0,0,1,2,3,4,5,6,7\n"
+        cinecams = self.get_objects_by_name("cinecam")
+        return Cinecam.generate_cinecams(cinecams, self.nodes)
         
     def get_objects_by_name(self, *names):
         ret = []
