@@ -1,5 +1,5 @@
 from Py3dsMax import mxs
-import Beam; reload(Beam)
+from .._global import BeamThing; reload(BeamThing)
 
 class BeamObjectBuilder(object):
     def make_node_beam(self, node_positions, beams, comments, beam_defaults, object_holder):
@@ -106,7 +106,7 @@ class BeamObjectSet(object):
         
         for combination in combinations: 
             python_name = "_".join(combination)
-            beam_object = Beam.RoRBeam(name)
+            beam_object = BeamThing.RoRBeam(name)
             beam_object.apply_beam_defaults(beam_defaults)
             self.beam_object_set[python_name] = beam_object
             
@@ -114,7 +114,7 @@ class BeamObjectSet(object):
                 setattr(beam_object, property_name, True)
                 
         #normal (ie. no options) is a special case:
-        normal = Beam.RoRBeam(name)
+        normal = BeamThing.RoRBeam(name)
         normal.apply_beam_defaults(beam_defaults)
         self.beam_object_set['normal'] = normal
     

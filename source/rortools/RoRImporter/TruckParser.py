@@ -603,6 +603,21 @@ class TruckParser(object):
         if self.mode == "commands":
             return
         
+        self.cinecams = getattr(self, "cinecams", [])
+        if self.mode == "cinecam":
+            cinecam = {}
+            self.cinecams.append(cinecam)
+            
+            args = self._parse_args(line)
+            cinecam['x'] = args.pop(0)
+            cinecam['y'] = args.pop(0)
+            cinecam['z'] = args.pop(0)
+            cinecam['nodes'] = []
+            for _ in range(8): cinecam['nodes'].append(self._resolve_node(args.pop(0)))
+            if args: cinecam['spring'] = float(args.pop(0))
+            if args: cinecam['damp'] = float(args.pop(0))
+            return
+            
         print "\tunparsed: %s" % line
 
     def _read_meshwheel(self, line):

@@ -43,3 +43,17 @@ Global RoRGlobals = attributes RoRGlobalsType
 		edittext ui_global_data "" height:300
 	)
 )
+
+global RoRCinecam = attributes CinecamsType
+(
+	parameters CinecamParameters rollout:CinecamRollout
+	(
+		Spring  ui:UiSpring    type:#float   default:-1 --8000
+		Damping ui:UiDamping   type:#float   default:-1 --800
+	)
+	Rollout CinecamRollout "RoR Data"
+	(
+		spinner UiSpring  "Spring"  range:[-1,999999999999,0]
+		spinner UiDamping "Damping" range:[-999999999999,999999999999,0]
+	)
+)

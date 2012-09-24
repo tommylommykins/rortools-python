@@ -2,11 +2,11 @@ import re
 
 from Py3dsMax import mxs
 
-import Position; reload(Position)
+from .._global import Position; reload(Position)
 import Node; reload(Node)
 import NodeLookup; reload(NodeLookup)
 
-from ..RoRImporter import Camera as ImporterCamera
+from .._global import Camera as ImporterCamera
 
 class Camera(NodeLookup.NodeLookup):
     def __init__(self, center, back, left, nodes):

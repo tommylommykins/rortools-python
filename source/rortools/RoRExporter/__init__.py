@@ -5,7 +5,6 @@ import GlobalData
 import MaxObjectCustAttribute
 import Node
 import NodeLookup
-import Position
 
 reload(Beam)
 reload(Camera)
@@ -14,6 +13,5 @@ reload(GlobalData)
 reload(MaxObjectCustAttribute)
 reload(Node)
 reload(NodeLookup)
-reload(Position)
 
 __all__ = ["Exporter", "Node", "Beam", "Position", "MaxObjectCustAttribute", "GlobalData", "Camera"]

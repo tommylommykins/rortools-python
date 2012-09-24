@@ -1,4 +1,4 @@
-import Position; reload(Position)
+from .._global import Position; reload(Position)
 
 import sys
 

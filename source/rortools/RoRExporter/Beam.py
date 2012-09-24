@@ -1,10 +1,10 @@
 from Py3dsMax import mxs
 
-import Position
+from .._global import Position
 import MaxObjectCustAttribute; reload(MaxObjectCustAttribute)
 import NodeLookup; reload(NodeLookup)
 
-import sys
+import re
 
 class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute, NodeLookup.NodeLookup):
     """A class for exporting the beams of a truck."""
@@ -51,7 +51,8 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute, NodeLookup.NodeLookup)
             num_knots = mxs.numknots(self.max_object, spline_no)
             knot_pair = []
             for knot_no in range(1, num_knots + 1):
-                pos = (Position.Position(str(mxs.getKnotPoint(self.max_object, spline_no, knot_no))))
+                pos_string = str(mxs.getKnotPoint(self.max_object, spline_no, knot_no))
+                pos = Position.Position(pos_string[1:-1].split(","))
                 knot_pair.append(pos)
             knot_pair = map( lambda knot_pos: self.nodes.index(self.nearest_node(knot_pos)), knot_pair)
             all_beams.append(sorted(knot_pair))

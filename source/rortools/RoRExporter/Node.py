@@ -1,31 +1,7 @@
 from Py3dsMax import mxs
 
-import Position
+from .._global import Node; reload(Node)
 
-class Node(object):
-    def __init__(self, position_string):
-        self.position = self._generate_position(position_string)
-    
-    def _generate_position(self, knot):
-        return Position.Position(str(knot))
-    
-    def __cmp__(self, other):
-        if self.position.x > other.position.x:
-            return 1
-        if self.position.x < other.position.x:
-            return -1
-        
-        if self.position.y > other.position.y:
-            return 1
-        if self.position.y < other.position.y:
-            return -1
-        
-        if self.position.z > other.position.z:
-            return 1
-        if self.position.z < other.position.z:
-            return -1
-        return 0
-            
 class FilteredNodeSet(object):
     def __init__(self, max_distance):
         self.max_distance = max_distance
@@ -59,10 +35,12 @@ class NodeExporter(object):
     def _read_nodes(self, beam_objs):
         knots = []
         for beam_obj in beam_objs:
-            #print mxs.pyhelper.namify(beam_obj.name)
             for spline_no in range(mxs.numsplines(beam_obj)):
                 spline_no += 1
                 for knot_no in range(mxs.numknots(beam_obj, spline_no)):
                     knot_no += 1
-                    knots.append(mxs.getKnotPoint(beam_obj, spline_no, knot_no))
-        return sorted(map(Node, knots))
+                    knots.append(str(mxs.getKnotPoint(beam_obj, spline_no, knot_no)))
+        node_list = []
+        for knot in knots:
+            node_list.append(Node.Node(position_string=knot))
+        return sorted(node_list)

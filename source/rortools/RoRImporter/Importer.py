@@ -5,10 +5,12 @@ from Py3dsMax import mxs
 
 import TruckParser; reload(TruckParser)
 import ImportBeams; reload(ImportBeams)
-import Beam; reload(Beam)
 import GlobalDataBox; reload(GlobalDataBox)
-import Camera; reload(Camera)
-from .._global import MaxObjHolder as MaxObjHolder
+
+from .._global import MaxObjHolder as MaxObjHolder; reload(MaxObjHolder)
+from .._global import Node as Node; reload(Node)
+from .._global import Camera; reload(Camera)
+from .._global import Cinecam as Cinecam; reload(Cinecam)
 
 class Importer:
     def __init__(self, truck_file=None):
@@ -26,19 +28,37 @@ class Importer:
         builder = ImportBeams.BeamObjectBuilder()
         builder.make_node_beam(self.node_positions, self.parser.beams, self.parser.comments, self.parser.beam_defaults, object_holder)
         self.import_cameras(object_holder)
+        self.import_cinecams(object_holder)
         
         object_holder.rotate_from_ror_to_max()
         
     def _load_node_positions(self):
-        self.node_positions = [mxs.Point3(n['x'], n['y'], n['z']) for n in self.parser.nodes]
+        self.node_positions = []
+        for n in self.parser.nodes:
+            self.node_positions.append(Node.Node(coord_list=[n['x'], n['y'], n['z']])) 
         
     def import_cameras(self, object_holder):
         for i, c in enumerate(self.parser.cameras):
-            Camera.Camera(i,
+            camera = Camera.Camera(i,
                           self.node_positions[c['center']],
                           self.node_positions[c['back']],
-                          self.node_positions[c['left']],
-                          object_holder)
+                          self.node_positions[c['left']])
+            object_holder.add_object(camera.camera_1)
+            object_holder.add_object(camera.camera_2)
+            object_holder.add_object(camera.camera_3)
+            
+    def import_cinecams(self, object_holder):
+        for i, cinecam in enumerate(self.parser.cinecams):
+            position_node = Node.Node(coord_list=[cinecam['x'], cinecam['y'], cinecam['z']])
+            connection_nodes = []
+            for connection_node in cinecam['nodes']:
+                connection_nodes.append(self.node_positions[connection_node])
+            spring = None
+            if "spring" in cinecam: spring = cinecam['spring']
+            damp = None
+            if "damp" in cinecam: damp = cinecam['damp']
+            cinecam = Cinecam.Cinecam(i, position_node, connection_nodes, spring, damp)
+            object_holder.add_object(cinecam.max_object)
 
     def _import_global_data(self, object_holder):
         """Takes truck data which isn't associated with a specific 3ds max object
@@ -46,7 +66,8 @@ class Importer:
         This allows it to be edited and exported later
         """
         #Make the box
-        GlobalDataBox.GlobalDataBox(self.parser.truck_name, self.parser.global_data, object_holder)
+        box = GlobalDataBox.GlobalDataBox(self.parser.truck_name, self.parser.global_data)
+        object_holder.add_object(box.max_object)
     
     def _spline_shape(self, name):
         """Generates an empty 3ds max splineshape"""
