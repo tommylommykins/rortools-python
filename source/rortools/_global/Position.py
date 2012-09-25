@@ -4,11 +4,31 @@ from Py3dsMax import mxs
 class Position(object):
     def __init__(self, coords):
         """Creates an object representing a set of coordinates in 3d space.
-        position_string is the string returned by mxs.getknotpoint
         """
+        if coords.__class__ == str:
+            coords = map(lambda num: float(num), coords[1:-1].split(","))
+        
         self.x = float(coords[0])
         self.y = float(coords[1])
         self.z = float(coords[2])
+        
+    def __cmp__(self, other):
+        #For pairwise ordering. Sort by X, then Y, then Z
+        if self.x > other.x:
+            return 1
+        if self.x < other.x:
+            return -1
+        
+        if self.y > other.y:
+            return 1
+        if self.y < other.y:
+            return -1
+        
+        if self.z > other.z:
+            return 1
+        if self.z < other.z:
+            return -1
+        return 0
             
     def distance_to(self, other_position):
         return math.sqrt(

@@ -25,8 +25,8 @@ class BeamThing(object):
         """
         beam_object = self.max_object
         spline = mxs.AddNewSpline(beam_object)
-        mxs.AddKnot(beam_object, spline, Names.CORNER, Names.LINE, node1.position.to_point3())
-        mxs.AddKnot(beam_object, spline, Names.CORNER, Names.LINE, node2.position.to_point3())
+        mxs.AddKnot(beam_object, spline, Names.CORNER, Names.LINE, node1.to_point3())
+        mxs.AddKnot(beam_object, spline, Names.CORNER, Names.LINE, node2.to_point3())
         mxs.UpdateShape(beam_object)
         
 class RoRBeam(BeamThing):

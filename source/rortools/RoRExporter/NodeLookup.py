@@ -1,4 +1,4 @@
-from .._global import Position; reload(Position)
+#from .._global import Position; reload(Position)
 
 import sys
 
@@ -7,7 +7,7 @@ class NodeLookup(object):
         best_distance = sys.float_info.max
         best_node = self.nodes[0] 
         for node in self.nodes:
-            distance = node.position.distance_to(pos)
+            distance = node.distance_to(pos)
             if distance == 0.0:
                 return node
             if distance < best_distance:

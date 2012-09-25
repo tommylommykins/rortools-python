@@ -8,7 +8,7 @@ class FilteredNodeSet(object):
         self.nodes = []
         
     def add_node(self, candidate_node):
-        distances = map(lambda other_node: candidate_node.position.distance_to(other_node.position), self.nodes)
+        distances = map(lambda other_node: candidate_node.distance_to(other_node), self.nodes)
         nodes_too_close = filter(lambda distance: self.max_distance >= distance, distances)
         if len(nodes_too_close) == 0: self.nodes.append(candidate_node)
         
@@ -23,13 +23,13 @@ class NodeExporter(object):
         self.node_positions = self._generate_node_positions()
         
     def _generate_node_positions(self):
-        the_lambda = lambda node: lambda node: mxs.point3(node.position.x, node.position.y, node.position.z)
+        the_lambda = lambda node: lambda node: mxs.point3(node.x, node.y, node.z)
         return map(the_lambda, self.nodes)
             
     def render_nodes(self):
         ret = "nodes\n"
         for i, node in enumerate(self.nodes):
-            ret += str(i) + ", " + str(node.position.x) + ", " + str(node.position.y) + ", " + str(node.position.z) + "\n"
+            ret += str(i) + ", " + str(node.x) + ", " + str(node.y) + ", " + str(node.z) + "\n"
         return ret
 
     def _read_nodes(self, beam_objs):
@@ -42,5 +42,5 @@ class NodeExporter(object):
                     knots.append(str(mxs.getKnotPoint(beam_obj, spline_no, knot_no)))
         node_list = []
         for knot in knots:
-            node_list.append(Node.Node(position_string=knot))
+            node_list.append(Node.Node(knot))
         return sorted(node_list)

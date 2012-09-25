@@ -28,14 +28,14 @@ class Cinecam(NodeLookup.NodeLookup,
         #cinecam node
         position_node = self._calculate_position_node(node_positions[0], node_positions[1])
         
-        ret = str(position_node.position.x) + ", " + \
-              str(position_node.position.y) + ", " + \
-              str(position_node.position.z) + ", "
+        ret = str(position_node.x) + ", " + \
+              str(position_node.y) + ", " + \
+              str(position_node.z) + ", "
               
         for beam_no in range(8):
             beam = node_positions[beam_no]
             far_node = self._select_non_position_node(position_node, beam)
-            ret += str(self.nodes.index(self.nearest_node(far_node.position))) + ", "
+            ret += str(self.nodes.index(self.nearest_node(far_node))) + ", "
         return ret
 
     def _calculate_position_node(self, beam1_nodes, beam2_nodes):
@@ -48,7 +48,7 @@ class Cinecam(NodeLookup.NodeLookup,
         maximum_distance = 0.1
         for beam1_node in beam1_nodes:
             for beam2_node in beam2_nodes:
-                if beam1_node.position.distance_to(beam2_node.position) <= maximum_distance:
+                if beam1_node.distance_to(beam2_node) <= maximum_distance:
                     return beam1_node
         #nonsensical default value -- to be used when something went wrong.
         return beam1_nodes[0]
@@ -60,8 +60,8 @@ class Cinecam(NodeLookup.NodeLookup,
         """
         node1 = other_beam_nodes[0]
         node2 = other_beam_nodes[1]
-        node1_distance = position_node.position.distance_to(node1.position)
-        node2_distance = position_node.position.distance_to(node2.position)
+        node1_distance = position_node.distance_to(node1)
+        node2_distance = position_node.distance_to(node2)
         if node1_distance < node2_distance:
             return node2
         else:

@@ -19,7 +19,7 @@ class BeamIterable(object):
             knot_pair = []
             for knot_no in range(1, num_knots + 1):
                 pos_string = str(mxs.getKnotPoint(self.max_object, spline_no, knot_no))
-                pos = Node.Node(position_string=pos_string)
+                pos = Node.Node(pos_string)
                 knot_pair.append(pos)
             all_beams.append(sorted(knot_pair))
         return sorted(all_beams)

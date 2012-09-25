@@ -35,21 +35,21 @@ class Importer:
     def _load_node_positions(self):
         self.node_positions = []
         for n in self.parser.nodes:
-            self.node_positions.append(Node.Node(coord_list=[n['x'], n['y'], n['z']])) 
-        
+            self.node_positions.append(Node.Node([n['x'], n['y'], n['z']])) 
+
     def import_cameras(self, object_holder):
         for i, c in enumerate(self.parser.cameras):
             camera = Camera.Camera(i,
-                          self.node_positions[c['center']],
-                          self.node_positions[c['back']],
-                          self.node_positions[c['left']])
+                                   self.node_positions[c['center']],
+                                   self.node_positions[c['back']],
+                                   self.node_positions[c['left']])
             object_holder.add_object(camera.camera_1)
             object_holder.add_object(camera.camera_2)
             object_holder.add_object(camera.camera_3)
-            
+
     def import_cinecams(self, object_holder):
         for i, cinecam in enumerate(self.parser.cinecams):
-            position_node = Node.Node(coord_list=[cinecam['x'], cinecam['y'], cinecam['z']])
+            position_node = Node.Node([cinecam['x'], cinecam['y'], cinecam['z']])
             connection_nodes = []
             for connection_node in cinecam['nodes']:
                 connection_nodes.append(self.node_positions[connection_node])
