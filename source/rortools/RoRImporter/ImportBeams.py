@@ -1,5 +1,5 @@
 from Py3dsMax import mxs
-from .._global import BeamThing; reload(BeamThing)
+from .._global import BeamThing
 
 class BeamObjectBuilder(object):
     def make_node_beam(self, node_positions, beams, comments, beam_defaults, object_holder):
@@ -167,4 +167,8 @@ class BeamObjectSet(object):
             length = i + 1
             ret.extend(list(itertools.combinations(lst, length)))
         return ret
+    
+def import_beams(node_positions, beams, comments, beam_defaults, object_holder):
+    builder = BeamObjectBuilder()
+    builder.make_node_beam(node_positions, beams, comments, beam_defaults, object_holder)
     

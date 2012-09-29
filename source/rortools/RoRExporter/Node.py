@@ -1,6 +1,6 @@
 from Py3dsMax import mxs
 
-from .._global import Node; reload(Node)
+from .._global import Node
 
 class FilteredNodeSet(object):
     def __init__(self, max_distance):

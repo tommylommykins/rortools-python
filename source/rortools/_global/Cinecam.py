@@ -1,6 +1,6 @@
 from Py3dsMax import mxs
 
-import BeamThing; reload(BeamThing)
+import BeamThing
 
 class Cinecam(BeamThing.BeamThing):
     def __init__(self, counter, position_node, connection_nodes, spring=None, damping=None):

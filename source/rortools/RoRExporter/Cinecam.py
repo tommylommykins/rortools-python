@@ -2,11 +2,11 @@
 
 from Py3dsMax import mxs
 
-import NodeLookup; reload(NodeLookup)
-import MaxObjectCustAttribute; reload(MaxObjectCustAttribute)
-import BeamIterable; reload(BeamIterable)
-from .._global import Node; reload(Node)
-from .._global import Cinecam as GlobalCinecam; reload(GlobalCinecam)
+import NodeLookup
+import MaxObjectCustAttribute
+import BeamIterable
+from .._global import Node
+from .._global import Cinecam
 
 class Cinecam(NodeLookup.NodeLookup,
               MaxObjectCustAttribute.MaxObjectCustAttribute,

@@ -1,4 +1,4 @@
-import Position; reload(Position)
+import Position
 
 class Node(Position.Position):
     #Class used for storing positions 

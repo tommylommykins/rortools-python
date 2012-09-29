@@ -3,13 +3,13 @@ import sys
 from Py3dsMax import mxs
 from blur3d.api import Scene
 
-import Node; reload(Node)
-import Beam; reload(Beam)
-import GlobalData; reload(GlobalData)
-import Camera; reload(Camera)
-import Cinecam; reload(Cinecam)
+import Node
+import Beam
+import GlobalData
+import Camera
+import Cinecam
 
-from .._global import MaxObjHolder as MaxObjHolder; reload(MaxObjHolder)
+from .._global import MaxObjHolder
 
 class Exporter(object):
     def __init__(self):

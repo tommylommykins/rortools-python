@@ -2,7 +2,7 @@ import re
 
 from Py3dsMax import mxs
 
-import Names; reload(Names)
+import Names
 
 class BeamThing(object):
     def __init__(self):

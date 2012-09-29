@@ -605,7 +605,7 @@ meshwheels2
 
 wheels
 0.45, 1, 12, 24, 37, 36, 1, 1, 14, 375.0, 4000000.0, 6000.0, tracks/wheelface tracks/wheelband1
-0.45, 1, 12, 32, 22, 33, 1, 1, 14, 375.0, 4000000.0, 6000.0, tracks/wheelface tracks/wheelband1
+0.45, 1, 13, 32, 22, 33, 1, 1, 14, 375.0, 4000000.0, 6000.0, tracks/wheelface tracks/wheelband1
 0.45, 1, 12, 40, 29, 41, 1, 1, 14, 375.0, 4000000.0, 6000.0, tracks/wheelface tracks/wheelband1
 0.45, 1, 12, 27, 45, 44, 1, 1, 14, 375.0, 4000000.0, 6000.0, tracks/wheelface tracks/wheelband1
 
