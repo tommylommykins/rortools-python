@@ -8,6 +8,7 @@ import Beam
 import GlobalData
 import Camera
 import Cinecam
+import ExportWheels
 
 from .._global import MaxObjHolder
 
@@ -21,6 +22,7 @@ class Exporter(object):
         data += self.export_beams()
         data += self.export_cameras()
         data += self.export_cinecams()
+        data += self.export_wheels()
         data += "\nend\n"
         self.rotate_all_to_max()
         print data
@@ -50,6 +52,10 @@ class Exporter(object):
     def export_cinecams(self):
         cinecams = self.get_objects_by_name("cinecam")
         return Cinecam.generate_cinecams(cinecams, self.nodes)
+    
+    def export_wheels(self):
+        wheels = self.get_objects_by_name("wheel")
+        return ExportWheels.generate_wheels(wheels, self.nodes)
         
     def get_objects_by_name(self, *names):
         ret = []

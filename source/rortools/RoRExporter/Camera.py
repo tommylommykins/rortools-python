@@ -47,7 +47,7 @@ def generate_default_cameras(cameras, nodes):
     node1 = Node.Node(position_string=str(positions[0]))
     node2 = Node.Node(position_string=str(positions[1]))
     node3 = Node.Node(position_string=str(positions[2]))
-    ImporterCamera.Camera(0, node1, node2, node3)
+    Camera.Camera(0, node1, node2, node3)
     return "cameras\n0,1,2\n"
     
 def max_camera(cameras):

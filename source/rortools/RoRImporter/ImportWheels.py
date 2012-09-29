@@ -1,18 +1,30 @@
 import GroupBy; reload(GroupBy)
 
 from .._global import Wheel
+from .._global import Box
+
+from Py3dsMax import mxs
 
 def import_wheels(node_positions, wheels, object_holder):
-    print "importing wheels"
     group_helper = GroupBy.DictHelper()
-    group_helper.dont_autocompare = ['node1', 'node2', 'rigidity_node', 'reference_node']
+    group_helper.dont_autocompare = ['node1', 'node2', 'reference_node']
     grouped_wheels = GroupBy.group_by_comparison_function(group_helper.perform_camparison, wheels)
-    for wheel_group in grouped_wheels:
-        import_wheel(node_positions, wheel_group, object_holder)
+    for i, wheel_group in enumerate(grouped_wheels):
+        import_wheel(i, node_positions, wheel_group, object_holder)
         
-def import_wheel(node_positions, wheel_group, object_holder):
-    for i, wheel in enumerate(wheel_group):
-        node1 = node_positions[wheel['node1']]
-        node2 = node_positions[wheel['node1']]
-        print "importing a wheel"
-        #Wheel.Wheel(i, node1, node2, wheel)
+def import_wheel(counter, node_positions, wheel_group, object_holder):
+    node_pairs = []
+    for wheel in wheel_group:
+        temp = []
+        node_pairs.append(temp)
+        temp.append(node_positions[wheel['node1']])
+        temp.append(node_positions[wheel['node2']])
+    wheel = Wheel.Wheel(counter, node_pairs, wheel_group[0])
+    object_holder.add_object(wheel.max_object)
+    
+    first_wheel = wheel_group[0]
+    if first_wheel['rigidity_node'] != 9999:
+        rigidity_node = Box.Box(node_positions[first_wheel['rigidity_node']],
+                                name="rigidity_node_" + wheel.name,
+                                wirecolor=mxs.color(55, 76, 83))
+        object_holder.add_object(rigidity_node.max_object)

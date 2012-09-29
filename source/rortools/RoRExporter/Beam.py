@@ -1,7 +1,7 @@
 from Py3dsMax import mxs
 
 from .._global import Position
-import MaxObjectCustAttribute
+from .._global import MaxObjectCustAttribute
 import NodeLookup
 
 import re

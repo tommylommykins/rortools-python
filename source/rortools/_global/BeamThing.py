@@ -7,6 +7,7 @@ import Names
 class BeamThing(object):
     def __init__(self):
         self.max_object = self._spline_shape("spline_shape")
+        self.max_object.render_thickness = 0
     
     def _get_name(self):
         return self.max_object.name

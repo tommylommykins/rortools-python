@@ -3,7 +3,7 @@
 from Py3dsMax import mxs
 
 import NodeLookup
-import MaxObjectCustAttribute
+from .._global import MaxObjectCustAttribute
 import BeamIterable
 from .._global import Node
 from .._global import Cinecam
@@ -36,7 +36,7 @@ class Cinecam(NodeLookup.NodeLookup,
             beam = node_positions[beam_no]
             far_node = self._select_non_position_node(position_node, beam)
             ret += str(self.nodes.index(self.nearest_node(far_node))) + ", "
-        return ret
+        return ret + "\n"
 
     def _calculate_position_node(self, beam1_nodes, beam2_nodes):
         """Returns a node whose position is at the actual position of the viewpoint of the
@@ -75,11 +75,11 @@ def generate_cinecams(cinecams, nodes):
     
     for cinecam in cinecams:
         cinecam = Cinecam(cinecam, nodes)
-        ret += cinecam.render()  + "\n"
-    return ret
+        ret += cinecam.render()
+    return ret + "\n"
         
 def generate_default_cinecam(nodes):
     position_node = Node.Node(coord_list=[0, 0, 0])
     connection_nodes = nodes[0:8]
-    cinecam = GlobalCinecam.Cinecam(0, position_node, connection_nodes)
+    cinecam = Cinecam.Cinecam(0, position_node, connection_nodes)
     return cinecam.max_object

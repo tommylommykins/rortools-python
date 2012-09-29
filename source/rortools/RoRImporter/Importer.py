@@ -4,16 +4,14 @@
 from Py3dsMax import mxs
 
 import TruckParser
-import GlobalDataBox
 import ImportBeams
 import ImportWheels
 
 from .._global import MaxObjHolder
 from .._global import Node
+from .._global import GlobalDataBox
 from .._global import Camera
 from .._global import Cinecam
-
-from .._global import MaxObjHolder
 
 class Importer:
     def __init__(self, truck_file=None):

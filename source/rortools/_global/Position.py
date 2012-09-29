@@ -5,6 +5,8 @@ class Position(object):
     def __init__(self, coords):
         """Creates an object representing a set of coordinates in 3d space.
         """
+        if coords.__class__.__name__ == "value_wrapper":
+            coords = str(coords)
         if coords.__class__ == str:
             coords = map(lambda num: float(num), coords[1:-1].split(","))
         

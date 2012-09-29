@@ -1,4 +1,4 @@
-import MaxObjectCustAttribute
+from .._global import MaxObjectCustAttribute
 
 from ..RoRImporter import GlobalDataBox
 
@@ -12,7 +12,7 @@ class GlobalData(MaxObjectCustAttribute.MaxObjectCustAttribute):
 def generate_global_data(global_boxes):
     if not global_boxes:
         #use default data if there is no box 
-        default_data = open("rortools/global/default_global_data.txt").read()
+        default_data = open("rortools/_global/default_global_data.txt").read()
         box = GlobalDataBox.GlobalDataBox("MyTruck", default_data)
         return GlobalData(box.max_object).render()
     else:
