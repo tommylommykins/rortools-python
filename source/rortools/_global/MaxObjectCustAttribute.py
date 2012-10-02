@@ -1,7 +1,7 @@
 from Py3dsMax import mxs
 
 class MaxObjectCustAttribute(object):
-    """Helper methods for dealing with 
+    """Helper methods for dealing with 3dsmax's custattributes
     """
     def has_custattribute(self, custattribute):
         custattribute_count = mxs.CustAttributes.count(self.max_object)

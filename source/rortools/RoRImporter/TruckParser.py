@@ -310,7 +310,7 @@ class TruckParser(object):
             defaults['friction']    = args.pop(0)
             defaults['volume']      = args.pop(0)
             defaults['surface']     = args.pop(0)
-            if args: defaults['options'] = args.pop(0)
+            if args: defaults['opts'] = args.pop(0)
             return
 
         if line.startswith("set_skeleton_settings"):
@@ -341,7 +341,7 @@ class TruckParser(object):
             node['x'] = float(args.pop(0))
             node['y'] = float(args.pop(0))
             node['z'] = float(args.pop(0))
-            if args: node['options'] = args.pop(0)
+            if args: node['opts'] = args.pop(0)
             if args: node['mass'] = float(args.pop(0))
 
             self._add_node(node)
@@ -372,7 +372,7 @@ class TruckParser(object):
             beam['line']  = line_no
             beam['node1'] = self._resolve_node(args.pop(0))
             beam['node2'] = self._resolve_node(args.pop(0))
-            if args: beam['options'] = args.pop(0)
+            if args: beam['opts'] = args.pop(0)
             if args: beam['support_length'] = int(args.pop(0))
             return
 
@@ -404,18 +404,18 @@ class TruckParser(object):
             args = self._parse_args(line)
             shock['node1'] = self._resolve_node(args.pop(0))
             shock['node2'] = self._resolve_node(args.pop(0))
-            shock['spring_in'] = args.pop(0)
-            shock['damp_in'] = args.pop(0)
-            shock['progressive_spring_in'] = 0
-            shock['progressive_damp_in'] = 0
+            shock['spring_in'] = float(args.pop(0))
+            shock['damp_in'] = float(args.pop(0))
+            shock['progressive_spring_in'] = 0.0
+            shock['progressive_damp_in'] = 0.0
             shock['spring_out'] = shock['spring_in']
             shock['damp_out'] = shock['damp_in']
-            shock['progressive_spring_out'] = 0
-            shock['progressive_damp_out'] = 0
-            shock['shortest_length'] = args.pop(0)
-            shock['longest_length'] = args.pop(0)
-            shock['precompression'] = args.pop(0)
-            if args: shock['options'] = args.pop(0)
+            shock['progressive_spring_out'] = 0.0
+            shock['progressive_damp_out'] = 0.0
+            shock['shortest_length'] = float(args.pop(0))
+            shock['longest_length'] = float(args.pop(0))
+            shock['precompression'] = float(args.pop(0))
+            if args: shock['opts'] = args.pop(0)
             return
 
         self.shocks = getattr(self, "shocks", [])
@@ -428,18 +428,18 @@ class TruckParser(object):
             args = self._parse_args(line)
             shock['node1'] = self._resolve_node(args.pop(0))
             shock['node2'] = self._resolve_node(args.pop(0))
-            shock['spring_in'] = args.pop(0)
-            shock['damp_in'] = args.pop(0)
-            shock['progressive_spring_in'] = args.pop(0)
-            shock['progressive_damp_in'] = args.pop(0)
-            shock['spring_out'] = args.pop(0)
-            shock['damp_out'] = args.pop(0)
-            shock['progressive_spring_out'] = args.pop(0)
-            shock['progressive_damp_out'] = args.pop(0)
-            shock['shortest_length'] = args.pop(0)
-            shock['longest_length'] = args.pop(0)
-            shock['precompression'] = args.pop(0)
-            if args: shock['options'] = args.pop(0)
+            shock['spring_in'] = float(args.pop(0))
+            shock['damp_in'] = float(args.pop(0))
+            shock['progressive_spring_in'] = float(args.pop(0))
+            shock['progressive_damp_in'] = float(args.pop(0))
+            shock['spring_out'] = float(args.pop(0))
+            shock['damp_out'] = float(args.pop(0))
+            shock['progressive_spring_out'] = float(args.pop(0))
+            shock['progressive_damp_out'] = float(args.pop(0))
+            shock['shortest_length'] = float(args.pop(0))
+            shock['longest_length'] = float(args.pop(0))
+            shock['precompression'] = float(args.pop(0))
+            if args: shock['opts'] = args.pop(0)
             return
 
         self.fixes = getattr(self, "fixes", [])
@@ -459,7 +459,7 @@ class TruckParser(object):
             hydro['node1'] = self._resolve_node(args.pop(0))
             hydro['node2'] = self._resolve_node(args.pop(0))
             if args: hydro['ratio'] = args.pop(0)
-            if args: hydro['options'] = args.pop(0)
+            if args: hydro['opts'] = args.pop(0)
             if args: hydro['start_delay'] = args.pop(0)
             if args: hydro['stop_delay'] = args.pop(0)
             if args: hydro['start_function'] = args.pop(0)

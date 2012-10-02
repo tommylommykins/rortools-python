@@ -3,7 +3,6 @@ import re
 from Py3dsMax import mxs
 
 from .._global import Position
-import Node
 import NodeLookup
 
 from .._global import Camera

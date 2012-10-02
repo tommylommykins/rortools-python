@@ -122,3 +122,37 @@ global RoRWheel = attributes WheelsType
 		)
 	)
 )
+
+global rorshock = attributes shockstype
+(
+	parameters shockparameters rollout:shockrollout
+	(
+		spring_in              ui:uispring_in              type:#float  default:500000
+		damp_in                ui:uidamp_in                type:#float  default:100000
+		progressive_spring_in  ui:uiprogressive_spring_in  type:#float  default:0.0
+		progressive_damp_in    ui:uiprogressive_damp_in    type:#float  default:0.0
+		spring_out             ui:uispring_out             type:#float  default:0.0
+		damp_out               ui:uidamp_out               type:#float  default:0.0
+		progressive_spring_out ui:uiprogressive_spring_out type:#float  default:0.0
+		progressive_damp_out   ui:uiprogressive_damp_out   type:#float  default:0.0
+		shortest_length        ui:uishortest_length        type:#float  default:1.0
+		longest_length         ui:uilongest_length         type:#float  default:1.0
+		precompression         ui:uiprecompression         type:#float  default:1.0
+		opts                   ui:uiopts                   type:#string default:""
+	)
+	Rollout shockrollout "RoR Data"
+	(
+		spinner      uispring_in              "spring in"      range:[0,999999999999,0]
+		spinner      uidamp_in                "Damping in"     range:[-999999999999,999999999999,0]
+		Spinner      uiprogressive_spring_in  "prog spr in"    range:[0,100,0]
+		spinner      uiprogressive_damp_in    "prog damp in"   range:[0,100,0]
+		spinner      uispring_out             "Spring out"     range:[0,10,0] scale:0.01
+		spinner      uidamp_out               "Damping out"    range:[0,10,0] scale:0.01
+		spinner      uiprogressive_spring_out "Prog spr out"   range:[0,10,0] scale:0.01
+		spinner      uiprogressive_damp_out   "prog damp out"  range:[0,10,0] scale:0.01
+		spinner      uishortest_length          "min length"     range:[0,10,0] scale:0.01
+		spinner      uilongest_length           "max length"     range:[0,10,0] scale:0.01
+		spinner      uiprecompression           "Precompression" range:[0,10,0] scale:0.01
+		edittext      uiopts                   "Options"
+	)
+)

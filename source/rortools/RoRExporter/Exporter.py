@@ -3,12 +3,13 @@ import sys
 from Py3dsMax import mxs
 from blur3d.api import Scene
 
-import Node
-import Beam
-import GlobalData
-import Camera
-import Cinecam
+import ExportNode
+import ExportBeam
+import ExportGlobalData
+import ExportCamera
+import ExportCinecam
 import ExportWheels
+import ExportShocks
 
 from .._global import MaxObjHolder
 
@@ -23,6 +24,7 @@ class Exporter(object):
         data += self.export_cameras()
         data += self.export_cinecams()
         data += self.export_wheels()
+        data += self.export_shocks()
         data += "\nend\n"
         self.rotate_all_to_max()
         print data
@@ -31,31 +33,35 @@ class Exporter(object):
         """Exports all data that is not associated with a specific max object.
         """
         global_data_boxes = self.get_objects_by_name("global_data")
-        return GlobalData.generate_global_data(global_data_boxes)
+        return ExportGlobalData.generate_global_data(global_data_boxes)
             
     def export_nodes(self):
         beam_objects = self.get_objects_by_name("beam")
         beam_objects = sorted(beam_objects, None, lambda b: b.name)
-        exporter = Node.NodeExporter(beam_objects)
+        exporter = ExportNode.NodeExporter(beam_objects)
         self.nodes = exporter.nodes
         self.node_positions = exporter.node_positions
         return exporter.render_nodes()
         
     def export_beams(self):
         beam_objects = self.get_objects_by_name("beam")
-        return Beam.generate_beams(beam_objects, self.nodes)
+        return ExportBeam.generate_beams(beam_objects, self.nodes)
     
     def export_cameras(self):
         cameras = self.get_objects_by_name("camera_center", "camera_left", "camera_back")
-        return Camera.generate_cameras(cameras, self.nodes)
+        return ExportCamera.generate_cameras(cameras, self.nodes)
     
     def export_cinecams(self):
         cinecams = self.get_objects_by_name("cinecam")
-        return Cinecam.generate_cinecams(cinecams, self.nodes)
+        return ExportCinecam.generate_cinecams(cinecams, self.nodes)
     
     def export_wheels(self):
         wheels = self.get_objects_by_name("wheel")
         return ExportWheels.generate_wheels(wheels, self.nodes)
+    
+    def export_shocks(self):
+        shocks = self.get_objects_by_name("shock")
+        return ExportShocks.generate_shocks(shocks, self.nodes)
         
     def get_objects_by_name(self, *names):
         ret = []

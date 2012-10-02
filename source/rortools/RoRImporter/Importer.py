@@ -6,6 +6,7 @@ from Py3dsMax import mxs
 import TruckParser
 import ImportBeams
 import ImportWheels
+import ImportShocks
 
 from .._global import MaxObjHolder
 from .._global import Node
@@ -30,6 +31,7 @@ class Importer:
         self.import_cameras(node_positions, parser.cameras, object_holder)
         self.import_cinecams(node_positions, parser.cinecams, object_holder)
         ImportWheels.import_wheels(node_positions, parser.wheels, object_holder)
+        ImportShocks.import_shocks(node_positions, parser.shocks, object_holder)
         
         object_holder.rotate_from_ror_to_max()
         
