@@ -1,0 +1,110 @@
+---
+separators:
+- &separator_none ""
+- &separator_space " "
+- &separator_commaspace ", "
+
+ranges:
+- &range_max_neg -999999999999999
+- &range_max_pos  999999999999999
+- &range_zero     0
+
+ui_controls:
+- &ui_spinner spinner
+- &ui_edittext edittext
+  
+shocks2:
+- name: node1
+  type: string
+  separator: *separator_none
+
+- name: node2
+  type: string
+  separator: *separator_commaspace
+  
+- name: spring_in
+  type: float
+  separator: *separator_commaspace
+  ui_control: spinner
+  range: [*range_zero, *range_max_pos, *range_zero] 
+  default: 100000
+  
+- name: damp_in
+  type: float
+  separator: *separator_commaspace
+  optional: false
+  ui_control: spinner
+  range: [*range_max_neg, *range_max_pos, *range_zero] 
+  default: 20000
+  
+- name: progressive_spring_in
+  type: float
+  separator: *separator_commaspace
+  ui_control: spinner
+  range: [*range_max_neg, *range_max_pos, *range_zero]
+  default: 0
+  
+- name: progressive_damp_in
+  type: float
+  separator: *separator_commaspace
+  ui_control: spinner
+  range: [*range_max_neg, *range_max_pos, *range_zero]
+  default: 0
+  
+- name: spring_out
+  type: float
+  separator: *separator_commaspace
+  ui_control: spinner
+  range: [*range_zero, *range_max_pos, *range_zero] 
+  default: 100000
+  
+- name: damp_out
+  type: float
+  separator: *separator_commaspace
+  optional: false
+  ui_control: spinner
+  range: [*range_max_neg, *range_max_pos, *range_zero] 
+  default: 20000
+  
+- name: progressive_spring_out
+  type: float
+  separator: *separator_commaspace
+  ui_control: spinner
+  range: [*range_max_neg, *range_max_pos, *range_zero]
+  default: 0
+  
+- name: progressive_damp_out
+  type: float
+  separator: *separator_commaspace
+  ui_control: spinner
+  range: [*range_max_neg, *range_max_pos, *range_zero]
+  default: 0
+  
+- name: shortest_length
+  type: float
+  separator: *separator_commaspace
+  ui_control: spinner
+  range: [*range_zero, 1, *range_zero]
+  default: 1
+  
+- name: longest_length
+  type: float
+  separator: *separator_commaspace
+  ui_control: spinner
+  range: [1, *range_max_pos, *range_zero]
+  default: *range_max_pos
+  
+- name: precompression
+  type: float
+  separator: *separator_commaspace
+  ui_control: spinner
+  range: [*range_zero, *range_max_pos, *range_zero]
+  default: 1
+  
+- name: opts
+  type: string
+  separator: *separator_commaspace
+  optional: true
+  ui_control: edittext
+  default: ""
+

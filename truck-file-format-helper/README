@@ -1,0 +1,36 @@
+This is a tool to generate maxscript and python code for parsing truck files,
+applying the values read from those truck files to 3dsmax custattributes,
+and writing them back out to truck files
+
+This eliminates a problem where information about the truck file
+would have to be duplicated in the parser, importer, custattributes code, and exporter.
+
+Instead the necessary information is recorded in a spreadsheet, and the appropriate
+python and maxscript code will be generated
+
+== parser ==
+The parser needs to know the following information about each data item of any particular
+data-line:
+* name and position on the line
+* data type
+* optional
+* separator from previous item
+
+== importer ==
+The importer needs to know...? 
+* which fields are necessary for sameness-comparison
+
+== custattributes ==
+Custattributes are responsible for saving the data when outside of either the importer
+or the exporter, as well as allowing the data to be edited. It needs to know:
+* name
+* data type
+* optional
+* default value
+* range
+* ui control 
+
+== exporter ==
+The exporter needs to know:
+* name and position on the line
+* separator from previous item 
