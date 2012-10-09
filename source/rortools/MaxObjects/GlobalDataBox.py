@@ -1,7 +1,7 @@
 from Py3dsMax import mxs
 
 import Box
-import Node
+from .._global import Node
 
 class GlobalDataBox(Box.Box):
     def __init__(self, truck_name, global_data):

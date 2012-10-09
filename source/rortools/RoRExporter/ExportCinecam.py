@@ -3,10 +3,10 @@
 from Py3dsMax import mxs
 
 import NodeLookup
-from .._global import MaxObjectCustAttribute
+from ..MaxObjects import MaxObjectCustAttribute
 import BeamIterable
 from .._global import Node
-from .._global import Cinecam
+from ..MaxObjects import Cinecam
 
 class Cinecam(NodeLookup.NodeLookup,
               MaxObjectCustAttribute.MaxObjectCustAttribute,

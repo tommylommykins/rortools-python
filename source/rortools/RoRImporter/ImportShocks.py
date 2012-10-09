@@ -1,6 +1,6 @@
 import GroupBy
 
-from .._global import Shock
+from ..MaxObjects import Shock
 
 def import_shocks(node_positions, shocks, object_holder):
     group_helper = GroupBy.DictHelper()

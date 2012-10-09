@@ -1,6 +1,7 @@
-from .._global import MaxObjectCustAttribute
+#from .._global import MaxObjectCustAttribute
+from ..MaxObjects import MaxObjectCustAttribute
 
-from ..RoRImporter import GlobalDataBox
+from ..MaxObjects import GlobalDataBox
 
 class GlobalData(MaxObjectCustAttribute.MaxObjectCustAttribute):
     def __init__(self, max_object):

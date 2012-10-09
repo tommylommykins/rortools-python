@@ -10,9 +10,9 @@ import ImportShocks
 
 from .._global import MaxObjHolder
 from .._global import Node
-from .._global import GlobalDataBox
-from .._global import Camera
-from .._global import Cinecam
+from ..MaxObjects import GlobalDataBox
+from ..MaxObjects import Camera
+from ..MaxObjects import Cinecam
 
 class Importer:
     def __init__(self, truck_file=None):

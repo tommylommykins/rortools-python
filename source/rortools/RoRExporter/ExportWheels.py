@@ -1,5 +1,5 @@
 import NodeLookup
-from .._global import MaxObjectCustAttribute
+from ..MaxObjects import MaxObjectCustAttribute
 import BeamIterable
 
 from .._global import Node

@@ -5,7 +5,7 @@ from Py3dsMax import mxs
 from .._global import Position
 import NodeLookup
 
-from .._global import Camera
+from ..MaxObjects import Camera
 from .._global import Node
 
 class Camera(NodeLookup.NodeLookup):

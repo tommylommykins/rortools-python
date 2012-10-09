@@ -1,7 +1,7 @@
 import GroupBy; reload(GroupBy)
 
-from .._global import Wheel
-from .._global import Box
+from ..MaxObjects import Wheel
+from ..MaxObjects import Box
 
 from Py3dsMax import mxs
 
@@ -19,7 +19,8 @@ def import_wheel(counter, node_positions, wheel_group, object_holder):
         node_pairs.append(temp)
         temp.append(node_positions[wheel['node1']])
         temp.append(node_positions[wheel['node2']])
-    wheel = Wheel.Wheel(counter, node_pairs, wheel_group[0])
+    wheel = Wheel.Wheel(node_pairs, wheel_group[0])
+    wheel.name = "wheel_" + str(counter)
     object_holder.add_object(wheel.max_object)
     
     first_wheel = wheel_group[0]
