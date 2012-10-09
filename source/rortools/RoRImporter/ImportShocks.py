@@ -16,5 +16,6 @@ def import_shock(counter, node_positions, shock_group, object_holder):
         node_pairs.append(temp)
         temp.append(node_positions[shock['node1']])
         temp.append(node_positions[shock['node2']])
-    shock = Shock.Shock(counter, node_pairs, shock_group[0])
+    shock = Shock.Shock(node_pairs, shock_group[0])
+    shock.name = "shock_" + str(counter)
     object_holder.add_object(shock.max_object)

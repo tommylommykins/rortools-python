@@ -48,8 +48,8 @@ global RoRCinecam = attributes CinecamsType
 (
 	parameters CinecamParameters rollout:CinecamRollout
 	(
-		Spring  ui:UiSpring    type:#float   default:-1 --8000
-		Damping ui:UiDamping   type:#float   default:-1 --800
+		spring ui:UiSpring    type:#float   default:-1 --8000
+		damp   ui:UiDamping   type:#float   default:-1 --800
 	)
 	Rollout CinecamRollout "RoR Data"
 	(

@@ -3,11 +3,10 @@ import BeamThing
 import MaxObjectCustAttribute
 
 class Shock(BeamThing.BeamThing, MaxObjectCustAttribute.MaxObjectCustAttribute):
-    def __init__(self, counter, node_pairs, properties):
+    def __init__(self, node_pairs, properties):
         BeamThing.BeamThing.__init__(self)
         MaxObjectCustAttribute.MaxObjectCustAttribute.__init__(self)
         self.apply_custattributes(properties)
-        self.max_object.name = "shock_" + str(counter)
         self.max_object.wirecolor = mxs.color(0, 0, 0)
         for node_pair in node_pairs:
             node1, node2 = node_pair

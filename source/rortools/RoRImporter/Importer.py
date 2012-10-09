@@ -69,11 +69,8 @@ class Importer:
             connection_nodes = []
             for connection_node in cinecam['nodes']:
                 connection_nodes.append(node_positions[connection_node])
-            spring = None
-            if "spring" in cinecam: spring = cinecam['spring']
-            damp = None
-            if "damp" in cinecam: damp = cinecam['damp']
-            cinecam = Cinecam.Cinecam(i, position_node, connection_nodes, spring, damp)
+            cinecam = Cinecam.Cinecam(position_node, connection_nodes, cinecam)
+            cinecam.max_object.name = "cinecam_" + str(i)
             object_holder.add_object(cinecam.max_object)
             
 class RoRParseError(Exception):
