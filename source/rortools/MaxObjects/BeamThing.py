@@ -28,3 +28,8 @@ class BeamThing(object):
         mxs.AddKnot(beam_object, spline, Names.CORNER, Names.LINE, node2.to_point3())
         mxs.UpdateShape(beam_object)
     
+    def draw_lines_from_node_pairs(self, node_pairs):
+        """draws a series of lines from a list of two element lists"""
+        for node_pair in node_pairs:
+            node1, node2 = node_pair
+            self.draw_line(node1, node2)

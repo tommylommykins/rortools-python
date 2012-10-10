@@ -1,4 +1,4 @@
-import GroupBy; reload(GroupBy)
+import GroupBy
 
 from ..MaxObjects import Wheel
 from ..MaxObjects import Box

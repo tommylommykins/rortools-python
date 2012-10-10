@@ -600,7 +600,30 @@ class TruckParser(object):
         if self.mode == "cab":
             return
         
-        if self.mode == "commands":
+        self.commands = getattr(self, "commands", [])
+        if self.mode == "commands" or self.mode == "commands2":
+            command = {}
+            self.commands.append(command)
+            
+            args = self._parse_args(line)
+            command['node1'] = self._resolve_node(args.pop(0))
+            command['node2'] = self._resolve_node(args.pop(0))
+            command['short_rate'] = float(args.pop(0))
+            if self.mode == "commands":
+                command['long_rate'] = float(args.pop(0))
+            else: #mode is commands2
+                command['long_rate'] = command['short_rate']
+            command['amount_short'] = float(args.pop(0))
+            command['amount_long'] = float(args.pop(0))
+            command['short_key'] = str(args.pop(0))
+            command['long_key'] = str(args.pop(0))
+            if args: command['options_var'] = args.pop(0)
+            if args: command['description'] = args.pop(0)
+            if args: command['start_delay'] = float(args.pop(0))
+            if args: command['stop_delay'] = float(args.pop(0))
+            if args: command['start_function'] = args.pop(0)
+            if args: command['stop_function'] = args.pop(0)
+            if args: command['affect_engine'] = int(args.pop(0))
             return
         
         self.cinecams = getattr(self, "cinecams", [])

@@ -10,8 +10,11 @@ import ExportCamera
 import ExportCinecam
 import ExportWheels
 import ExportShocks
+import ExportCommands
 
 from .._global import MaxObjHolder
+
+import ColumnAligner
 
 class Exporter(object):
     def __init__(self):
@@ -25,8 +28,13 @@ class Exporter(object):
         data += self.export_cinecams()
         data += self.export_wheels()
         data += self.export_shocks()
+        data += self.export_commands()
         data += "\nend\n"
+        
         self.rotate_all_to_max()
+        
+        data = ColumnAligner.RoRColumnAligner().ror_align_by_column(data)
+        
         print data
         
     def export_global_data(self):
@@ -62,6 +70,10 @@ class Exporter(object):
     def export_shocks(self):
         shocks = self.get_objects_by_name("shock")
         return ExportShocks.generate_shocks(shocks, self.nodes)
+    
+    def export_commands(self):
+        commands = self.get_objects_by_name("command")
+        return ExportCommands.generate_commands(commands, self.nodes)
         
     def get_objects_by_name(self, *names):
         ret = []

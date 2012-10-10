@@ -31,6 +31,11 @@ class DictHelper(object):
         """Compares all values of each dict to make sure they are the same,
         except where values have been explicitly forbidden from being compared
         """
+        #Check that the two dicts share the same keys first
+        keys_match = len((set(this.keys()) ^ set(other.keys())) - set(self.dont_autocompare)) == 0
+        if not keys_match:
+            return False 
+        
         for key in this.keys():
             if key in self.dont_autocompare:
                 continue

@@ -150,9 +150,45 @@ global rorshock = attributes shockstype
 		spinner      uidamp_out               "Damping out"    range:[0,10,0] scale:0.01
 		spinner      uiprogressive_spring_out "Prog spr out"   range:[0,10,0] scale:0.01
 		spinner      uiprogressive_damp_out   "prog damp out"  range:[0,10,0] scale:0.01
-		spinner      uishortest_length          "min length"     range:[0,10,0] scale:0.01
-		spinner      uilongest_length           "max length"     range:[0,10,0] scale:0.01
-		spinner      uiprecompression           "Precompression" range:[0,10,0] scale:0.01
-		edittext      uiopts                   "Options"
+		spinner      uishortest_length        "min length"     range:[0,10,0] scale:0.01
+		spinner      uilongest_length         "max length"     range:[0,10,0] scale:0.01
+		spinner      uiprecompression         "Precompression" range:[0,10,0] scale:0.01
+		edittext      uiopts                  "Options"
+	)
+)
+
+global rorcommand = attributes commandstype
+(
+	parameters Commands2Parameters rollout:Commands2Rollout
+	(
+		short_rate     ui:UiShortRate    type:#float   default:0.1
+		long_rate      ui:UiLongRate     type:#float   default:0.1
+		amount_short   ui:UiAmountShort  type:#float   default:1
+		amount_long    ui:UiAmountLong   type:#float   default:1
+		short_key      ui:UiShortkey     type:#string  default:"1"
+		long_key       ui:UiLongkey      type:#string  default:"1"
+		options_var    ui:UiOptions      type:#string  default:"n"
+		description    ui:UiDescription  type:#string  default:""
+		start_delay    ui:UiStartDelay   type:#float   default:0
+		stop_delay     ui:UiStopDelay    type:#float   default:0
+		start_function ui:UiStartFun     type:#string  default:"constant"
+		stop_function  ui:UiStopFun      type:#string  default:"constant"
+		affect_engine  ui:UiAffectEngine type:#integer default:1
+	)
+	Rollout Commands2Rollout "RoR Data"
+	(
+		spinner  UiShortRate    "Shortening rate"  range:[0,999,0]
+		spinner  UiLongRate     "Lengthening rate" range:[0,999,0]
+		spinner  UiAmountShort  "Shortest length"  range:[0,999,0]
+		spinner  UiAmountLong   "Longest length"   range:[0,999,0]
+		editText UiShortKey     "Shortening key"
+		editText UiLongKey      "Lengthening key"
+		editText UiOptions      "Options"          items:#("Normal", "Rope", "Invisible", "Auto center", "Force restricted", "Press once", "Press once with center")
+		editText UiDescription  "Description"
+		spinner  UiStartDelay   "Start Delay"      range:[0, 9999999, 0]
+		spinner  UiStopDelay    "Stop Delay"       range:[0, 9999999, 0]
+		editText UiStartFun     "Start Function"
+		editText UiStopFun      "Stop Function"
+		spinner  UiAffectEngine "Affect Engine"   range:[0, 1, 0] scale:1
 	)
 )

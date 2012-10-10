@@ -40,6 +40,8 @@ class Shock(NodeLookup.NodeLookup,
         return ret
         
 def generate_shocks(shocks, nodes):
+    if not shocks:
+        return ""
     ret = "shocks2\n"
     for shock in shocks:
         ret += Shock(shock, nodes).render()
