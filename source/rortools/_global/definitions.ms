@@ -192,3 +192,25 @@ global rorcommand = attributes commandstype
 		spinner  UiAffectEngine "Affect Engine"   range:[0, 1, 0] scale:1
 	)
 )
+
+global rorhydro = attributes hydrostype
+(
+	parameters HydroParameters rollout:HydroRollout
+	(
+		ratio          ui:UiFactor        type:#float  default:0.2
+		opts           ui:UiFlag          type:#string default:"n"
+		start_delay    ui:UiStartDelay    type:#float  default:0
+		stop_delay     ui:UiStopDelay     type:#float  default:0
+		start_function ui:UiStartFunction type:#string default:"constant"
+		stop_function  ui:UiStopFunction  type:#string default:"constant"
+	)
+	Rollout HydroRollout "RoR Data"
+	(
+		spinner  UiFactor        "Extension" range:[-10,10,0] scale:0.01
+		edittext UiFlag          "Flag"
+		spinner  UiStartDelay    "Start delay" range:[0, 999, 0] scale:0.001
+		spinner  UiStopDelay     "Stop delay"  range:[0, 999, 0]
+		edittext UiStartFunction
+		edittext UiStopFunction
+	)
+)

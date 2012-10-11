@@ -11,6 +11,7 @@ import ImportCinecams
 import ImportWheels
 import ImportShocks
 import ImportCommands
+import ImportHydros
 
 from .._global import MaxObjHolder
 from .._global import Node
@@ -35,6 +36,7 @@ class Importer:
         ImportWheels.import_wheels(node_positions, parser.wheels, object_holder)
         ImportShocks.import_shocks(node_positions, parser.shocks, object_holder)
         ImportCommands.import_commands(node_positions, parser.commands, object_holder)
+        ImportHydros.import_hydros(node_positions, parser.hydros, object_holder)
         
         object_holder.rotate_from_ror_to_max()
         

@@ -11,6 +11,7 @@ import ExportCinecam
 import ExportWheels
 import ExportShocks
 import ExportCommands
+import ExportHydros
 
 from .._global import MaxObjHolder
 
@@ -19,7 +20,9 @@ import ColumnAligner
 class Exporter(object):
     def __init__(self):
         mxs.fileIn("rortools/_global/definitions.ms")
+        
         self.rotate_all_to_ror()
+        
         data = ""
         data += self.export_global_data()
         data += self.export_nodes() #This has the side effect of generating self.nodes and self.node_positions
@@ -29,6 +32,7 @@ class Exporter(object):
         data += self.export_wheels()
         data += self.export_shocks()
         data += self.export_commands()
+        data += self.export_hydros()
         data += "\nend\n"
         
         self.rotate_all_to_max()
@@ -74,6 +78,10 @@ class Exporter(object):
     def export_commands(self):
         commands = self.get_objects_by_name("command")
         return ExportCommands.generate_commands(commands, self.nodes)
+    
+    def export_hydros(self):
+        hydros = self.get_objects_by_name("hydro")
+        return ExportHydros.generate_hydros(hydros, self.nodes)
         
     def get_objects_by_name(self, *names):
         ret = []

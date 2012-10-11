@@ -32,7 +32,7 @@ class Wheel(NodeLookup.NodeLookup,
             ret += self.rigidity_node_number() + ", "
             ret += str(self.max_object.braked) + ", "
             ret += str(self.max_object.driven) + ", "
-            ret += "9999, "
+            ret += "0, "
             ret += str(self.max_object.mass) + ", "
             ret += str(self.max_object.spring) + ", "
             ret += str(self.max_object.damp) + ", "

@@ -6,9 +6,11 @@ class BeamObjectBuilder(object):
     def make_node_beam(self, node_positions, beams, comments, beam_defaults, object_holder):
         """Generates the 3ds Max representation of the beams of a truck.
         """
-        beam_set = BeamObjectSet("beam_1", {'line': 0, 'spring':-987,
-                                            'damp':-1, 'deform':-1,
-                                            'break_force': 0 })
+        default_beam_defaults = {'line': 0, 'spring':-1,
+                                 'damp':-1, 'deform':-1,
+                                 'break_force': 0 }
+        beam_defaults.append(default_beam_defaults)
+        beam_set = BeamObjectSet("beam_1", beam_defaults[-1])
         self.comment_tracker = CommentTracker(comments)
         self.beam_default_tracker = BeamDefaultTracker(beam_defaults)
         for beam in beams:

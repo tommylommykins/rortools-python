@@ -60,7 +60,7 @@ class RoRColumnAligner(object):
 class RoRSectionGrouper(object):
     def __init__(self):
         self.groups = []
-        self.current_group = self.new_group()
+        self.new_group()
         
     def new_group(self):
         self.current_group = []

@@ -6,8 +6,9 @@ from ..MaxObjects import Box
 from Py3dsMax import mxs
 
 def import_wheels(node_positions, wheels, object_holder):
+    fix_negative_rigidity_nodes(wheels)
     group_helper = GroupBy.DictHelper()
-    group_helper.dont_autocompare = ['node1', 'node2', 'reference_node']
+    group_helper.dont_autocompare = ['node1', 'node2']
     grouped_wheels = GroupBy.group_by_comparison_function(group_helper.perform_camparison, wheels)
     for i, wheel_group in enumerate(grouped_wheels):
         import_wheel(i, node_positions, wheel_group, object_holder)
@@ -29,3 +30,10 @@ def import_wheel(counter, node_positions, wheel_group, object_holder):
                                 name="rigidity_node_" + wheel.name,
                                 wirecolor=mxs.color(55, 76, 83))
         object_holder.add_object(rigidity_node.max_object)
+        
+def fix_negative_rigidity_nodes(wheels):
+    for wheel in wheels:
+        for key, value in wheel.items():
+            if key is 'rigidity_node':
+                if value < 0:
+                    wheel['rigidity_node'] = -value

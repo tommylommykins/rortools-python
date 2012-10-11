@@ -458,10 +458,10 @@ class TruckParser(object):
             args = self._parse_args(line)
             hydro['node1'] = self._resolve_node(args.pop(0))
             hydro['node2'] = self._resolve_node(args.pop(0))
-            if args: hydro['ratio'] = args.pop(0)
+            if args: hydro['ratio'] = float(args.pop(0))
             if args: hydro['opts'] = args.pop(0)
-            if args: hydro['start_delay'] = args.pop(0)
-            if args: hydro['stop_delay'] = args.pop(0)
+            if args: hydro['start_delay'] = float(args.pop(0))
+            if args: hydro['stop_delay'] = float(args.pop(0))
             if args: hydro['start_function'] = args.pop(0)
             if args: hydro['stop_function'] = args.pop(0)
             return
