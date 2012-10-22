@@ -4,6 +4,7 @@
 from Py3dsMax import mxs
 
 import TruckParser
+import ImportNodes
 import ImportGlobalData
 import ImportBeams
 import ImportCameras
@@ -14,7 +15,6 @@ import ImportCommands
 import ImportHydros
 
 from .._global import MaxObjHolder
-from .._global import Node
 
 class Importer:
     def __init__(self, truck_file=None):
@@ -27,7 +27,7 @@ class Importer:
         
         object_holder = MaxObjHolder.MaxObjHolder()
         
-        node_positions = self.load_node_positions(parser.nodes)
+        node_positions = ImportNodes.load_node_positions(parser.nodes, object_holder)
         
         ImportGlobalData.import_global_data(parser.truck_name, parser.global_data, object_holder)
         ImportBeams.import_beams(node_positions, parser.beams, parser.comments, parser.beam_defaults, object_holder)
@@ -39,12 +39,6 @@ class Importer:
         ImportHydros.import_hydros(node_positions, parser.hydros, object_holder)
         
         object_holder.rotate_from_ror_to_max()
-        
-    def load_node_positions(self, nodes):
-        node_positions = []
-        for n in nodes:
-            node_positions.append(Node.Node([n['x'], n['y'], n['z']]))
-        return node_positions
      
 class RoRParseError(Exception):
     def __init__(self, value):

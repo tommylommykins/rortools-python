@@ -1,6 +1,6 @@
 from Py3dsMax import mxs
 
-from .._global import Position
+from .._global import Node
 from ..MaxObjects import MaxObjectCustAttribute
 import NodeLookup
 
@@ -30,12 +30,12 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute, NodeLookup.NodeLookup)
         the global list written into the class variable update_preexisting_beams. 
         """
         unique_beams = []
-        for node_pair in self.all_beams():
+        for node1, node2 in self.all_beams():
             #Ignore beams starting and ending at the same vertex.
-            if len(set(node_pair)) == 1:
+            if node1 == node2:
                 continue
             
-            node_pair = tuple(sorted(node_pair))
+            node_pair = tuple(sorted([node1, node2]))
             if node_pair not in preexisting_beams:
                 unique_beams.append(node_pair)
                 preexisting_beams.add(node_pair)
@@ -52,11 +52,18 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute, NodeLookup.NodeLookup)
             knot_pair = []
             for knot_no in range(1, num_knots + 1):
                 pos_string = str(mxs.getKnotPoint(self.max_object, spline_no, knot_no))
-                pos = Position.Position(pos_string[1:-1].split(","))
+                pos = Node.Node(pos_string[1:-1].split(","))
                 knot_pair.append(pos)
-            knot_pair = map( lambda knot_pos: self.nodes.index(self.nearest_node(knot_pos)), knot_pair)
             all_beams.append(sorted(knot_pair))
         return sorted(all_beams)
+    
+    def all_nodes(self):
+        """returns all nodes in the beam object as a list of node objects
+        """
+        if hasattr(self, "unique_nodes"):
+            return self.unique_nodes
+        self.unique_nodes = list(set(self._flatten(self.all_beams())))
+        return self.unique_nodes
     
     def _render_beam_header(self):
         ret = "\n;" + self.max_object.name + "\n"
@@ -77,7 +84,7 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute, NodeLookup.NodeLookup)
         return ret
     
     def _render_individual_beam(self, pos1, pos2):        
-        return str(pos1) + ", " + str(pos2) + self._render_beam_flags() + "\n"
+        return str(self.nodes.index(pos1)) + ", " + str(self.nodes.index(pos2)) + self._render_beam_flags() + "\n"
     
     def _render_beam_flags(self):
         ret = ""
@@ -88,6 +95,21 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute, NodeLookup.NodeLookup)
         if not ret: return ""
         return ", " + ret
     
+    def _flatten(self, l, ltypes=(list, tuple)):
+        ltype = type(l)
+        l = list(l)
+        i = 0
+        while i < len(l):
+            while isinstance(l[i], ltypes):
+                if not l[i]:
+                    l.pop(i)
+                    i -= 1
+                    break
+                else:
+                    l[i:i + 1] = l[i]
+            i += 1
+        return ltype(l)
+
     def _split_lines(self):
         """forces all the splines of an editable spline object to be one segment long
         the method is defined in pure maxscript, so if it is not defined then it needs to be

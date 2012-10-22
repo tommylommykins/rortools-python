@@ -15,6 +15,8 @@ Global RoRBeam = attributes BeamsType
 		rope           ui:UiRope          type:#boolean default:false
 		support        ui:UiSupport       type:#boolean default:false
 		support_len    ui:UiSupportLen    type:#float   default: 0
+		sepcat_one     ui:UiSepCat1       type:#string  default:""
+		sepcat_two     ui:UiSepCat2       type:#string  default:""
 	)
 	rollout BeamRollout "RoR data"
 	(
@@ -29,6 +31,8 @@ Global RoRBeam = attributes BeamsType
 		checkbox UiRope          "Rope"
 		checkbox UiSupport   	 "Support"
 		spinner  UiSupportLen    "Support Length"
+		edittext UiSepCat1       "Separation cat. 1"
+		edittext UiSepCat2       "Separation cat. 2"
 	)
 )
 

@@ -29,6 +29,11 @@ class RoRBeam(BeamThing.BeamThing):
             
         return parsed_name
     
+    def apply_category(self, category):
+        beam_object = self.max_object
+        beam_object.sepcat_one = category.category1
+        beam_object.sepcat_two = category.category2
+    
     def apply_beam_defaults(self, beam_defaults):
         beam_object = self.max_object
         beam_object.spring = int(beam_defaults['spring'])

@@ -24,15 +24,17 @@ class Exporter(object):
         self.rotate_all_to_ror()
         
         data = ""
-        data += self.export_global_data()
-        data += self.export_nodes() #This has the side effect of generating self.nodes and self.node_positions
-        data += self.export_beams()
-        data += self.export_cameras()
-        data += self.export_cinecams()
-        data += self.export_wheels()
-        data += self.export_shocks()
-        data += self.export_commands()
-        data += self.export_hydros()
+        #data += self.export_global_data()
+        data += self.export_nodes() #This has the side effect of generating self.nodes
+        #data += self.export_beams()
+        #=======================================================================
+        # data += self.export_cameras()
+        # data += self.export_cinecams()
+        # data += self.export_wheels()
+        # data += self.export_shocks()
+        # data += self.export_commands()
+        # data += self.export_hydros()
+        #=======================================================================
         data += "\nend\n"
         
         self.rotate_all_to_max()
@@ -52,7 +54,6 @@ class Exporter(object):
         beam_objects = sorted(beam_objects, None, lambda b: b.name)
         exporter = ExportNode.NodeExporter(beam_objects)
         self.nodes = exporter.nodes
-        self.node_positions = exporter.node_positions
         return exporter.render_nodes()
         
     def export_beams(self):
