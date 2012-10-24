@@ -15,6 +15,7 @@ class MaxObjHolder(object):
         for obj in self.mxs_objects:
             self._rotate(obj, angle1)
             self._rotate(obj, angle2)
+            self._swap_pivot_x_and_y(obj)
                     
     def rotate_from_max_to_ror(self):
         angle1 = mxs.angleaxis(-90, mxs.point3(0, 1, 0))
@@ -22,6 +23,16 @@ class MaxObjHolder(object):
         for obj in self.mxs_objects:
             self._rotate(obj, angle1)
             self._rotate(obj, angle2)
+            self._swap_pivot_x_and_y(obj)
+            
+    def _swap_pivot_x_and_y(self, object):
+        try:
+            original_x = object.pivot.x
+            original_y = object.pivot.y
+            original_z = object.pivot.z
+            object.pivot = mxs.point3(original_y, original_x, original_z)
+        except:
+            print "failed to move pivot point for " + str(object)
     
     def _rotate(self, object, angle):
         try:
@@ -30,7 +41,7 @@ class MaxObjHolder(object):
             mxs.rotate(object, angle)
             object.pivot = original_pivot
         except:
-            print "failed to rotate" + str(object) 
+            print "failed to rotate " + str(object) 
             
             
     def delete_all(self):

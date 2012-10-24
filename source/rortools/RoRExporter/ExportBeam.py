@@ -83,8 +83,10 @@ class Beam(MaxObjectCustAttribute.MaxObjectCustAttribute, NodeLookup.NodeLookup)
         ret += ", " + str(self.max_object.deform_plastic)
         return ret
     
-    def _render_individual_beam(self, pos1, pos2):        
-        return str(self.nodes.index(pos1)) + ", " + str(self.nodes.index(pos2)) + self._render_beam_flags() + "\n"
+    def _render_individual_beam(self, pos1, pos2):
+        node1 = self.nearest_node(pos1)
+        node2 = self.nearest_node(pos2)
+        return str(self.nodes.index(node1)) + ", " + str(self.nodes.index(node2)) + self._render_beam_flags() + "\n"
     
     def _render_beam_flags(self):
         ret = ""

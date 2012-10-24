@@ -26,15 +26,14 @@ class Exporter(object):
         data = ""
         #data += self.export_global_data()
         data += self.export_nodes() #This has the side effect of generating self.nodes
-        #data += self.export_beams()
-        #=======================================================================
-        # data += self.export_cameras()
-        # data += self.export_cinecams()
-        # data += self.export_wheels()
-        # data += self.export_shocks()
-        # data += self.export_commands()
-        # data += self.export_hydros()
-        #=======================================================================
+    
+        data += self.export_beams()
+        data += self.export_cameras()
+        data += self.export_cinecams()
+        data += self.export_wheels()
+        data += self.export_shocks()
+        data += self.export_commands()
+        data += self.export_hydros()
         data += "\nend\n"
         
         self.rotate_all_to_max()

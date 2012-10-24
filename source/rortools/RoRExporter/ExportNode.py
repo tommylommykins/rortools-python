@@ -23,30 +23,32 @@ class FilteredNodeSet(object):
         
     def _separation_categories(self, node):
         """Gets a set of separation categories for a node, if they are near separation boxes"""
+        #node separation only occurs where separation boxes, so if node is not near one, then return no separation categories
+        if not self._node_near_separation_box(node):
+            return set()
         separation_categories = self._separation_categories_ignoring_separation_boxes(node)
         ret = separation_categories
         if len(ret) == 0:
-            return ret
-        print ret
+            return set()
         print self._node_near_separation_box(node)
+        print ret
         return ret
 
     def _node_near_separation_box(self, node):
         """Gets if a node is near a separation box"""
         separation_boxes = self._separation_boxes()
         distances = map(lambda sep_box: node.distance_to(sep_box), separation_boxes)
-        print distances
-        boxes_near_enough = filter(lambda distance: distance < 0.02, distances)
+        boxes_near_enough = filter(lambda distance: distance < 0.1, distances)
         return any(boxes_near_enough)
     
     def _separation_boxes(self):
         """Gets all the separation boxes in the scene as a list of Nodes"""
         if not hasattr(self, "_internal_separation_boxes"):
-            self._internal_separation_boxes = \
-                map(lambda obj: Node.Node(obj._nativePointer.pos),
-                    filter(lambda obj: obj.name().lower().startswith("separation_node"),
-                           Scene.instance().objects()))
-            map(lambda box: mxs.centerpivot(box), self._internal_separation_boxes)
+            sep_boxes = filter(lambda obj: obj.name().lower().startswith("separation_node"),
+                               Scene.instance().objects())
+            map(lambda box: mxs.centerpivot(box._nativePointer), sep_boxes)
+            self._internal_separation_boxes = map(lambda obj: Node.Node(obj._nativePointer.pos),
+                                                  sep_boxes)
         return self._internal_separation_boxes
     
     def _beam_objects(self):
