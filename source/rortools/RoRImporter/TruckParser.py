@@ -640,6 +640,69 @@ class TruckParser(object):
             if args: cinecam['spring'] = float(args.pop(0))
             if args: cinecam['damp'] = float(args.pop(0))
             return
+        
+        if self.mode == "flares" or self.mode == "flares2": return
+        if self.mode == "contacters": return
+        if self.mode == "ropes": return
+        if self.mode == "props": return
+        if self.mode == "globeams": return
+        if self.mode == "wings": return
+        if self.mode == "turboprops" or self.mode == "turboprops2": return
+        if self.mode == "fusedrag": return
+        if self.mode == "engoption": return
+        if self.mode == "brakes": return
+        if self.mode == "rotators" or self.mode == "rotators2": return
+        if self.mode == "screwprops": return
+        if self.mode == "guisettings": return
+        if self.mode == "minimass": return
+        if self.mode == "exhausts": return
+        if self.mode == "particles": return
+        if self.mode == "turbojets": return
+        if self.mode == "rigidifiers": return
+        if self.mode == "airbrakes": return
+        if self.mode == "flexbodies": return
+        if self.mode == "hookgroup": return
+        if self.mode == "materialflarebindings": return
+        if self.mode == "soundsources": return
+        if self.mode == "soundsources2": return
+        if self.mode == "soundsources2": return
+        if self.mode == "envmap": return
+        if self.mode == "managedmaterials": return
+        if self.mode == "sectionconfig": return
+        if self.mode == "section": return
+        if self.mode == "torquecurve": return
+        if self.mode == "advanceddrag": return
+        if self.mode == "axles": return
+        if self.mode == "railgroups": return
+        
+        self.slidenodes = getattr(self, "slidenodes", [])
+        if self.mode == "slidenodes":
+            slidenode = {}
+            self.slidenodes.append(slidenode)
+            
+            args = self._parse_args(line)
+            slidenode['nodes'] = []
+            for arg in args:
+                first_char = arg[0].lower()
+                
+                if first_char.isdigit():
+                    node = self._resolve_node(arg)
+                    if 'id' not in slidenode:
+                        slidenode['id'] = node
+                    else:
+                        slidenode['nodes'].append(node)
+                if first_char == "s":
+                    slidenode['spring'] = float(arg[1:-1])
+                    
+                if first_char == "b": 
+                    slidenode['break_amount'] = float(arg[1:-1])
+                    
+                if first_char == "t":
+                    slidenode['tolerence'] = float(arg[1:-1])
+             
+            return
+        if self.mode == "nodecollision": return
+        if self.mode == "vidcam": return
             
         print "\tunparsed: %s" % line
 

@@ -218,3 +218,19 @@ global rorhydro = attributes hydrostype
 		edittext UiStopFunction
 	)
 )
+
+global rorslidenode = attributes slidenodestype
+(
+	parameters slidenodeparameters rollout:slidenoderollout
+	(
+		spring       ui:UiSpring    type:#float default:900000
+		break_amount ui:UiBreak     type:#float default:-1
+		tolerence    ui:UiTolerence type:#float default:0
+	)
+	rollout slidenoderollout "RoR Data"
+	(
+		spinner UiSpring    "Spring "     range:[0,  9999999999999999999999999, 0]
+		spinner UiBreak     "Break force" range:[-1, 9999999999999999999999999, 0]
+		spinner UiTolerence "Tolerence"   range:[0,  9999999999999999999999999, 0]
+	)
+)
