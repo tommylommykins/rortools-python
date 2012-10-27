@@ -3,12 +3,14 @@ import GroupBy
 from ..MaxObjects import Slidenode
 
 def import_slidenodes(node_positions, slidenodes, object_holder):
-    for slidenode in slidenodes:
+    for i, slidenode in enumerate(slidenodes):
         attribute_dict = slidenode.copy()
         del attribute_dict['id']
         del attribute_dict['nodes']
-        print slidenode
         nodes = map(lambda node: node_positions[node], slidenode['nodes'])
         max_slidenode = Slidenode.Slidenode(node_positions[slidenode['id']], nodes, attribute_dict)
-        for max_object in max_slidenode.max_objects:
-            object_holder.add_object(max_object)
+        max_slidenode.set_max_names(i)
+        
+        object_holder.add_object(max_slidenode.id_box.max_object)
+        for box in max_slidenode.nodes:
+            object_holder.add_object(box.max_object)

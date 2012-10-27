@@ -12,6 +12,7 @@ import ExportWheels
 import ExportShocks
 import ExportCommands
 import ExportHydros
+import ExportSlidenodes
 
 from .._global import MaxObjHolder
 
@@ -24,7 +25,7 @@ class Exporter(object):
         self.rotate_all_to_ror()
         
         data = ""
-        #data += self.export_global_data()
+        data += self.export_global_data()
         data += self.export_nodes() #This has the side effect of generating self.nodes
     
         data += self.export_beams()
@@ -34,6 +35,7 @@ class Exporter(object):
         data += self.export_shocks()
         data += self.export_commands()
         data += self.export_hydros()
+        data += self.export_slidenodes()
         data += "\nend\n"
         
         self.rotate_all_to_max()
@@ -82,6 +84,10 @@ class Exporter(object):
     def export_hydros(self):
         hydros = self.get_objects_by_name("hydro")
         return ExportHydros.generate_hydros(hydros, self.nodes)
+    
+    def export_slidenodes(self):
+        slidenodes = self.get_objects_by_name("slidenode")
+        return ExportSlidenodes.generate_slidenodes(slidenodes, self.nodes)
         
     def get_objects_by_name(self, *names):
         ret = []
