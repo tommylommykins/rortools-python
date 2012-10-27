@@ -594,10 +594,33 @@ class TruckParser(object):
             self._add_global_data(line)
             return
         
+        self.texcoords = getattr(self, "texcoords", [])
         if self.mode == "texcoords":
+            if self._comment(line): return
+            
+            texcoord = {}
+            self.texcoords.append(texcoord)
+            
+            args = self._parse_args(line)
+            texcoord['line'] = line_no
+            texcoord['node'] = self._resolve_node(args.pop(0))
+            texcoord['u'] = float(args.pop(0))
+            texcoord['v'] = float(args.pop(0))
             return
         
+        self.cabs = getattr(self, "cabs", [])
         if self.mode == "cab":
+            if self._comment(line): return
+            
+            cab = {}
+            self.cabs.append(cab)
+            
+            args = self._parse_args(line)
+            cab['line'] = line_no
+            cab['node1'] = self._resolve_node(args.pop(0))
+            cab['node2'] = self._resolve_node(args.pop(0))
+            cab['node3'] = self._resolve_node(args.pop(0))
+            if args: cab['args'] = args.pop(0)
             return
         
         self.commands = getattr(self, "commands", [])

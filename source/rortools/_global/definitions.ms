@@ -234,3 +234,17 @@ global rorslidenode = attributes slidenodestype
 		spinner UiTolerence "Tolerence"   range:[0,  9999999999999999999999999, 0]
 	)
 )
+
+global rorsubmesh = attributes submeshtype
+(
+	parameters submeshparameters rollout:submeshrollout
+	(
+		backmesh  ui:UiBackmesh type:#boolean   default:false
+		flag      ui:UiFlag     type:#string    default:""
+	)
+	Rollout submeshrollout "RoR Data"
+	(
+		checkbutton  UiBackmesh "Backmesh" 
+		edittext     UiFlag     "Flag"
+	)
+)
