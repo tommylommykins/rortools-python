@@ -53,6 +53,8 @@ class Wheel(NodeLookup.NodeLookup,
     
 def generate_wheels(wheels, nodes):
     ret = "wheels\n"
+    if not wheels:
+        return ""
     for wheel in wheels:
         ret += Wheel(wheel, nodes).render()
     return ret + "\n"

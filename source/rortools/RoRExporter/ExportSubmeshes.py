@@ -46,7 +46,7 @@ class Submesh(NodeLookup.NodeLookup,
 
 def generate_submeshes(submeshes, nodes):
     if not submeshes:
-        return
+        return ""
     ret = ""
     for submesh in submeshes:
         ret += Submesh(submesh, nodes).render()    return ret + "\n"

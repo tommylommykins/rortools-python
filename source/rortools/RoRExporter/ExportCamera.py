@@ -5,7 +5,7 @@ from Py3dsMax import mxs
 from .._global import Position
 import NodeLookup
 
-from ..MaxObjects import Camera
+from ..MaxObjects import Camera as GlobalCamera
 from .._global import Node
 
 class Camera(NodeLookup.NodeLookup):
@@ -37,16 +37,10 @@ def generate_cameras(cameras, nodes):
     return ret + "\n"
 
 def generate_default_cameras(cameras, nodes):
-    map(lambda camera: mxs.delete(camera), cameras)
-    positions = []
-    for node_no in range(3):
-        node_pos = nodes[node_no].position
-        positions.append(mxs.Point3(node_pos.x, node_pos.y, node_pos.z))
-    
-    node1 = Node.Node(position_string=str(positions[0]))
-    node2 = Node.Node(position_string=str(positions[1]))
-    node3 = Node.Node(position_string=str(positions[2]))
-    Camera.Camera(0, node1, node2, node3)
+    try:
+        map(lambda camera: mxs.delete(camera), cameras)
+    except: pass
+    GlobalCamera.Camera(0, nodes[0], nodes[1], nodes[2])
     return "cameras\n0,1,2\n"
     
 def max_camera(cameras):
@@ -59,8 +53,8 @@ def max_camera(cameras):
 def select_cameras(camera_no, cameras):
     candidate_set = [camera for camera in cameras if re.search(str(camera_no), camera.name)]
     if len(candidate_set) != 3:
-        print "failed to find 3 different camera objects for camera set " + str(camera_no)
-        print "got" + str([camera.name for camera in candidate_set])
+        #print "failed to find 3 different camera objects for camera set " + str(camera_no)
+        #print "got" + str([camera.name for camera in candidate_set])
         return False
     
     center_camera = None
