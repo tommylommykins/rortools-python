@@ -15,6 +15,7 @@ import ImportCommands
 import ImportHydros
 import ImportSlidenodes
 import ImportSubmeshes
+import ImportContacters
 
 from .._global import MaxObjHolder
 
@@ -41,6 +42,7 @@ class Importer:
         ImportHydros.import_hydros(node_positions, parser.hydros, object_holder)
         ImportSlidenodes.import_slidenodes(node_positions, parser.slidenodes, object_holder)
         ImportSubmeshes.import_submeshes(node_positions, parser.submeshes, parser.cabs, parser.texcoords, parser.backmeshes, object_holder)
+        ImportContacters.import_contacters(node_positions, parser.contacters, object_holder)
         object_holder.rotate_from_ror_to_max()
      
 class RoRParseError(Exception):

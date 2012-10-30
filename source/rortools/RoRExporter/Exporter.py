@@ -14,6 +14,7 @@ import ExportCommands
 import ExportHydros
 import ExportSlidenodes
 import ExportSubmeshes
+import ExportContacters
 
 from .._global import MaxObjHolder
 
@@ -38,6 +39,7 @@ class Exporter(object):
         data += self.export_hydros()
         data += self.export_slidenodes()
         data += self.export_submeshes()
+        data += self.export_contacters()
         data += "\nend\n"
         
         self.rotate_all_to_max()
@@ -94,6 +96,10 @@ class Exporter(object):
     def export_submeshes(self):
         submeshes = self.get_objects_by_name("submesh")
         return ExportSubmeshes.generate_submeshes(submeshes, self.nodes)
+    
+    def export_contacters(self):
+        contacters = self.get_objects_by_name("contacter")
+        return ExportContacters.generate_contacters(contacters, self.nodes)
         
     def get_objects_by_name(self, *names):
         ret = []

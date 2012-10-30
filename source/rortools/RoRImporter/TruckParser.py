@@ -665,7 +665,13 @@ class TruckParser(object):
             return
         
         if self.mode == "flares" or self.mode == "flares2": return
-        if self.mode == "contacters": return
+        
+        self.contacters = getattr(self, "contacters", [])
+        if self.mode == "contacters":
+            if self._comment(line):
+                return
+            self.contacters.append(self._resolve_node(line))
+        
         if self.mode == "ropes": return
         if self.mode == "props": return
         if self.mode == "globeams": return
